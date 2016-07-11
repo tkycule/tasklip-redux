@@ -1,0 +1,31 @@
+version: "2"
+services:
+  dev-server: &app_base
+    container_name: dev-server
+    build:
+      context: .
+      args:
+        - APP_HOME=${PWD}
+    ports:
+      - "3000:3000"
+    command: >
+      sh -c "
+        npm install --no-optional &&
+        npm run start
+      "
+    volumes:
+      - .:${PWD}
+      - nodejs-volume:${PWD}/node_modules
+  test:
+    <<: *app_base
+    container_name: test
+    ports: []
+    command: >
+      sh -c "
+        npm install --no-optional &&
+        npm run test:watch
+      "
+
+volumes:
+  nodejs-volume:
+
