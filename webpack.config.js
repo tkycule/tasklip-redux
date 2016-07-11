@@ -23,7 +23,7 @@ const dest = join(root, "dist");
 // ENV variables
 const dotEnvVars = dotenv.config();
 const environmentEnv = dotenv.config({
-  path: join(root, "config", `${NODE_ENV}.config.js`),
+  path: join(root, "config", `${NODE_ENV}.env`),
   silent: true
 });
 const envVariables = Object.assign({}, dotEnvVars, environmentEnv);
@@ -55,6 +55,8 @@ const defines = Object.keys(envVariables)
     __NODE_ENV__: JSON.stringify(NODE_ENV),
     __DEBUG__: isDev
   });
+
+// console.log(defines);
 
 config.plugins = [
   new webpack.DefinePlugin(defines)
