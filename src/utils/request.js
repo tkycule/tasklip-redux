@@ -1,7 +1,7 @@
 import superagent from "superagent";
 import superagentJsonapify from "superagent-jsonapify";
 
-// import User from "../models/User";
+import User from "models/User";
 
 superagentJsonapify(superagent);
 
@@ -43,10 +43,10 @@ function send(method, url, options = {}) {
       .set("Content-Type", "application/json")
       .set("Accept", "application/json");
 
-    // const currentUser = User.getCurrentUser();
-      // if (currentUser) {
-      //   req.set("Authorization", currentUser.authentication_token);
-      // }
+    const currentUser = User.getCurrentUser();
+    if (currentUser) {
+      req.set("Authorization", currentUser.authentication_token);
+    }
 
     req.end((err, res) => {
       if (err) {

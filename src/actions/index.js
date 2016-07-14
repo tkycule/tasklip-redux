@@ -22,3 +22,10 @@ export const notification = createAction(NOTIFICATION);
 
 export const CLEAR_NOTIFICATION = "CLEAR_NOTIFICATION";
 export const clearNotification = createAction(CLEAR_NOTIFICATION);
+
+export const FETCH_LISTS = "FETCH_LISTS";
+export const FETCH_LISTS_SUCCESS = "FETCH_LISTS_SUCCESS";
+export const FETCH_LISTS_FAILURE = "FETCH_LISTS_FAILURE";
+export const fetchLists = createAction(FETCH_LISTS);
+export const fetchListsSuccess = createAction(FETCH_LISTS_SUCCESS);
+export const fetchListsFailure = createAction(FETCH_LISTS_FAILURE);

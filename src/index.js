@@ -23,6 +23,7 @@ import { routerReducer, routerMiddleware, syncHistoryWithStore } from "react-rou
 import App from "containers/App/App";
 import Home from "containers/Home/Home";
 import Lists from "containers/Lists/Lists";
+import List from "containers/Lists/List";
 import User from "models/User";
 
 import rootSaga from "sagas/sagas";
@@ -64,8 +65,10 @@ ReactDOM.render(
       <Router history={history}>
         <Route path="/" component={App}>
           <IndexRoute component={Home} onEnter={guestOnly} />
-          <Route path="lists" component={Lists} onEnter={userOnly}></ Route>
+          <Route path="lists" component={Lists} onEnter={userOnly}>
+            <Route path=":listId/tasks" component={List} />
           </Route>
+        </Route>
       </Router>
     </MuiThemeProvider>
   </Provider>

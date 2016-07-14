@@ -2,33 +2,44 @@ import { takeEvery } from "redux-saga";
 import { put, call, fork } from "redux-saga/effects";
 import { replace } from "react-router-redux";
 
-import { LOGIN, loginSuccess, loginFailure, REGISTER, registerSuccess, registerFailure, notification } from "actions";
+import * as actions from "actions";
 import User from "models/User";
+import List from "models/List";
 
 function* login(action) {
   try {
     let user = yield call(User.login, action.payload.email, action.payload.password);
     yield put(replace("/lists"));
-    yield put(loginSuccess(user));
-    yield put(notification({
+    yield put(actions.loginSuccess(user));
+    yield put(actions.notification({
       message: "ログインしました"
     }));
   } catch (e) {
-    yield put(loginFailure(e));
+    yield put(actions.loginFailure(e));
   }
 }
 
 function* register(action) {
   try {
     let user = yield call(User.register, action.payload.email, action.payload.password);
-    yield put(replace("/lists"));
-    yield put(registerSuccess(user));
+    yield put(actions.replace("/lists"));
+    yield put(actions.registerSuccess(user));
   } catch (e) {
-    yield put(registerFailure(e));
+    yield put(actions.registerFailure(e));
+  }
+}
+
+function* fetchLists() {
+  try {
+    let lists = yield call(List.fetchAll);
+    yield put(actions.fetchListsSuccess(lists));
+  } catch (e) {
+    yield put(actions.fetchListsFailure(e));
   }
 }
 
 export default function* rootSaga() {
-  yield fork(takeEvery, LOGIN, login);
-  yield fork(takeEvery, REGISTER, register);
+  yield fork(takeEvery, actions.LOGIN, login);
+  yield fork(takeEvery, actions.REGISTER, register);
+  yield fork(takeEvery, actions.FETCH_LISTS, fetchLists);
 }

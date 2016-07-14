@@ -1,5 +1,6 @@
 import * as actions from "actions";
 import User from "models/User";
+import { List } from "immutable";
 
 export function currentUser(state = User.getCurrentUser(), action) {
   switch (action.type) {
@@ -12,7 +13,11 @@ export function currentUser(state = User.getCurrentUser(), action) {
   return state;
 }
 
-export function lists(state = [], action) {
+export function lists(state = List(), action) {
+  switch (action.type) {
+    case actions.FETCH_LISTS_SUCCESS:
+      return action.payload;
+  }
   return state;
 }
 
