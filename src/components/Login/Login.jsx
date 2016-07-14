@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Card, CardHeader, CardText, CardActions } from "material-ui/Card";
+import { Card, CardText, CardActions } from "material-ui/Card";
 import RaisedButton from "material-ui/RaisedButton";
 import Formsy from "formsy-react";
 import { FormsyText } from "formsy-material-ui/lib";
@@ -8,8 +8,7 @@ import { FormsyText } from "formsy-material-ui/lib";
 let errorMessages = {
   isEmail: "invalid format",
   minLength: "greater than 8",
-  maxLength: "less than 64",
-  equalsField: "doesn't match"
+  maxLength: "less than 64"
 };
 
 export default class Login extends React.Component {
@@ -38,7 +37,7 @@ export default class Login extends React.Component {
     });
   }
 
-  onSubmit(data, resetForm) {
+  onSubmit(data) {
     this.props.login({
       email: data.email,
       password: data.password
@@ -56,22 +55,13 @@ export default class Login extends React.Component {
               validations="isEmail"
               validationErrors={errorMessages}
               fullWidth={true}
-              defaultValue="a@a.com"
+              defaultValue="test@example.com"
               required/>
             <FormsyText
               type="password"
               name="password"
               floatingLabelText="Password"
               validations="minLength:8,maxLength:64"
-              validationErrors={errorMessages}
-              fullWidth={true}
-              defaultValue="password"
-              required/>
-            <FormsyText
-              type="password"
-              name="password_confirmation"
-              floatingLabelText="Password (Confirmation)"
-              validations="equalsField:password"
               validationErrors={errorMessages}
               fullWidth={true}
               defaultValue="password"

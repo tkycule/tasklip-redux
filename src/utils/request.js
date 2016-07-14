@@ -1,8 +1,7 @@
-import config from "../../config/default";
 import superagent from "superagent";
 import superagentJsonapify from "superagent-jsonapify";
 
-import User from "../models/User";
+// import User from "../models/User";
 
 superagentJsonapify(superagent);
 
@@ -38,16 +37,16 @@ function destroy(url, body) {
 
 function send(method, url, options = {}) {
   return new Promise((resolve, reject) => {
-    const req = superagent[method]("http://" + config.api_domain + ":" + config.api_port + "/v1" + url)
+    const req = superagent[method](__API_URL__ + url)
       .send(options.body)
       .query(options.query)
       .set("Content-Type", "application/json")
       .set("Accept", "application/json");
 
-    const currentUser = User.getCurrentUser();
-    if (currentUser) {
-      req.set("Authorization", currentUser.authentication_token);
-    }
+    // const currentUser = User.getCurrentUser();
+      // if (currentUser) {
+      //   req.set("Authorization", currentUser.authentication_token);
+      // }
 
     req.end((err, res) => {
       if (err) {

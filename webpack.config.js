@@ -8,7 +8,6 @@ const path = require("path");
 
 const join = path.join;
 const resolve = path.resolve;
-
 const getConfig = require("hjs-webpack");
 
 const isDev = NODE_ENV === "development";
@@ -56,8 +55,6 @@ const defines = Object.keys(envVariables)
     __DEBUG__: isDev
   });
 
-// console.log(defines);
-
 config.plugins = [
   new webpack.DefinePlugin(defines)
 ].concat(config.plugins);
@@ -98,7 +95,7 @@ config.module.loaders.push({
   exclude: /flexboxgrid/
 });
 
-
+// console.log(config.module.loaders);
 // CSS modules
 
 // postcss

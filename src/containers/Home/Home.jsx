@@ -7,6 +7,7 @@ import * as actions from "actions";
 import { Tabs, Tab } from "material-ui/Tabs";
 
 import Login from "components/Login/Login";
+import Register from "components/Register/Register";
 
 export class Home extends React.Component {
 
@@ -20,7 +21,7 @@ export class Home extends React.Component {
           <Login login={this.props.login} />
         </Tab>
         <Tab label="Register">
-          Register
+          <Register register={this.props.register} />
         </Tab>
       </Tabs>
       );
