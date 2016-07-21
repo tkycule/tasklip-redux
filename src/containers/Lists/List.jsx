@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import ImmutablePropTypes from "react-immutable-proptypes";
 import ReactCSSTransitionGroup from "react/lib/ReactCSSTransitionGroup";
+import { withRouter } from "react-router";
 
 import Formsy from "formsy-react";
 import { FormsyText } from "formsy-material-ui/lib";
@@ -87,6 +88,7 @@ export class List extends React.Component {
                                               task={task}
                                               updateTask={this.props.actions.updateTask}
                                               destroyTask={this.props.actions.destroyTask}
+                                              router={this.props.router}
                                               key={task.id} />)}
           </ReactCSSTransitionGroup>
         </UIList>
@@ -113,4 +115,4 @@ function mapDispatchToProps(dispatch) {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(List);
+)(withRouter(List));

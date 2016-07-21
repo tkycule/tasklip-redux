@@ -24,6 +24,7 @@ import App from "containers/App/App";
 import Home from "containers/Home/Home";
 import Lists from "containers/Lists/Lists";
 import List from "containers/Lists/List";
+import EditTask from "containers/EditTask/EditTask";
 import User from "models/User";
 
 import rootSaga from "sagas/sagas";
@@ -67,6 +68,7 @@ ReactDOM.render(
           <IndexRoute component={Home} onEnter={guestOnly} />
           <Route path="lists" component={Lists} onEnter={userOnly}>
             <Route path=":listId/tasks" component={List} />
+            <Route path=":listId/tasks/:taskId/edit" component={EditTask} />
           </Route>
         </Route>
       </Router>
