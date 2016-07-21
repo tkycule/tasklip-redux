@@ -1,31 +1,26 @@
 import { createAction } from "redux-actions";
+import changeCase from "change-case";
 
-export const LOGIN = "LOGIN";
-export const LOGIN_SUCCESS = "LOGIN_SUCCESS";
-export const LOGIN_FAILURE = "LOGIN_FAILURE";
-export const login = createAction(LOGIN);
-export const loginSuccess = createAction(LOGIN_SUCCESS);
-export const loginFailure = createAction(LOGIN_FAILURE);
+createSuite("login", true);
+createSuite("logout", true);
+createSuite("register");
+createSuite("notification", true);
+createSuite("clear_notification", true);
+createSuite("fetchLists");
+createSuite("fetchTasks");
+createSuite("addTask");
+createSuite("updateTask");
+createSuite("destroyTask");
 
-export const LOGOUT = "LOGOUT";
-export const logout = createAction(LOGOUT);
+function createSuite(action, noSuccessAndFailure = false) {
+  let constant = changeCase.constantCase(action);
+  exports[constant] = constant;
+  exports[action] = createAction(constant);
 
-export const REGISTER = "REGISTER";
-export const REGISTER_SUCCESS = "REGISTER_SUCCESS";
-export const REGISTER_FAILURE = "REGISTER_FAILURE";
-export const register = createAction(REGISTER);
-export const registerSuccess = createAction(REGISTER_SUCCESS);
-export const registerFailure = createAction(REGISTER_FAILURE);
-
-export const NOTIFICATION = "NOTIFICATION";
-export const notification = createAction(NOTIFICATION);
-
-export const CLEAR_NOTIFICATION = "CLEAR_NOTIFICATION";
-export const clearNotification = createAction(CLEAR_NOTIFICATION);
-
-export const FETCH_LISTS = "FETCH_LISTS";
-export const FETCH_LISTS_SUCCESS = "FETCH_LISTS_SUCCESS";
-export const FETCH_LISTS_FAILURE = "FETCH_LISTS_FAILURE";
-export const fetchLists = createAction(FETCH_LISTS);
-export const fetchListsSuccess = createAction(FETCH_LISTS_SUCCESS);
-export const fetchListsFailure = createAction(FETCH_LISTS_FAILURE);
+  if (!noSuccessAndFailure) {
+    exports[constant + "_SUCCESS"] = constant + "_SUCCESS";
+    exports[constant + "_FAILURE"] = constant + "_FAILURE";
+    exports[action + "Success"] = createAction(constant + "_SUCCESS");
+    exports[action + "Failure"] = createAction(constant + "_FAILURE");
+  }
+}

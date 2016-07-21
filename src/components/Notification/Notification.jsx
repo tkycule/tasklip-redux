@@ -2,7 +2,7 @@ import React from "react";
 import ReactCSSTransitionGroup from "react/lib/ReactCSSTransitionGroup";
 
 import { Card, CardHeader } from "material-ui/Card";
-import { blue100 } from "material-ui/styles/colors";
+import { green100, yellow100, red100 } from "material-ui/styles/colors";
 
 export default class Notification extends React.Component {
 
@@ -10,19 +10,27 @@ export default class Notification extends React.Component {
 
   }
 
+  static backgroundColors = {
+    "success": green100,
+    "warning": yellow100,
+    "error": red100
+  }
+
   constructor(props) {
     super(props);
 
     this.timeoutId = null;
     this.state = {
-      message: null
+      message: null,
+      type: null
     };
   }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.notification !== this.props.notification && nextProps.notification.message != null) {
       this.setState({
-        message: nextProps.notification.message
+        message: nextProps.notification.message,
+        type: nextProps.notification.type || "success"
       });
 
       this.timeoutId = setTimeout(() => {
@@ -34,20 +42,24 @@ export default class Notification extends React.Component {
     }
   }
 
-  style = {
-    position: "fixed",
-    top: 0,
-    left: 0,
-    right: 0,
-    backgroundColor: blue100,
-    textAlign: "center",
-    cursor: "pointer"
+
+  getStyle() {
+    return {
+      position: "fixed",
+      top: 0,
+      left: 0,
+      right: 0,
+      backgroundColor: this.constructor.backgroundColors[this.state.type],
+      textAlign: "center",
+      cursor: "pointer"
+    };
   }
 
   onClickCard() {
     clearTimeout(this.timeoutId);
     this.setState({
-      message: null
+      message: null,
+      type: null
     });
     this.props.clearNotification();
   }
@@ -55,7 +67,7 @@ export default class Notification extends React.Component {
   render() {
     let component;
     if (this.state.message != null) {
-      component = <Card style={this.style} onClick={::this.onClickCard}>
+      component = <Card style={this.getStyle.apply(this)} onClick={::this.onClickCard} className={this.state.type}>
                     <CardHeader title={this.props.notification.message} />
                   </Card>
       ;

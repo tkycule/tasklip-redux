@@ -16,27 +16,21 @@ function wrapState(ComposedComponent) {
   return class SelectableList extends React.Component {
     static propTypes = {
       children: React.PropTypes.node.isRequired,
-      defaultValue: React.PropTypes.number.isRequired,
+      selectedIndex: React.PropTypes.number.isRequired,
       onSelect: React.PropTypes.func.isRequired
     };
 
     componentWillMount() {
-      this.setState({
-        selectedIndex: this.props.defaultValue
-      });
-      this.props.onSelect(this.props.defaultValue);
+      this.props.onSelect(this.props.selectedIndex);
     }
 
     handleRequestChange = (event, index) => {
-      this.setState({
-        selectedIndex: index
-      });
       this.props.onSelect(index);
     };
 
     render() {
       return (
-        <ComposedComponent value={this.state.selectedIndex} onChange={this.handleRequestChange}>
+        <ComposedComponent value={this.props.selectedIndex} onChange={this.handleRequestChange}>
           {this.props.children}
         </ComposedComponent>
         );
@@ -49,18 +43,23 @@ SelectableList = wrapState(SelectableList);
 export class Lists extends React.Component {
 
   static propTypes = {
-    lists: ImmutablePropTypes.list,
-    fetchLists: React.PropTypes.func.isRequired
+    lists: ImmutablePropTypes.list
   }
 
   componentDidMount() {
-    this.props.fetchLists();
+    this.props.actions.fetchLists();
   }
 
   onSelectList(index) {
-    console.log(index);
     if (index != -1) {
       this.props.router.push(`/lists/${this.props.lists.get(index).id}/tasks`);
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.location.pathname.indexOf("config") == -1 && nextProps.params.listId == undefined && nextProps.lists.size > 0) {
+      let list = nextProps.lists.find((list) => list.id == this.props.params.list) || nextProps.lists.get(0);
+      this.props.router.push(`/lists/${list.id}/tasks`);
     }
   }
 
@@ -68,7 +67,7 @@ export class Lists extends React.Component {
     let lists;
 
     if (!this.props.lists.isEmpty()) {
-      lists = this.props.lists.map((list, index) => <ListItem key={list.id} value={index} rightIcon={<span>{list.tasks_count}</span>}>
+      lists = this.props.lists.map((list, index) => <ListItem key={list.id} value={index} rightIcon={<span style={{ textAlign: "center", lineHeight: "24px" }}>{list.tasks_count}</span>}>
                                                       {list.name}
                                                     </ListItem>);
     } else {
@@ -78,7 +77,7 @@ export class Lists extends React.Component {
     return (
       <div>
         <Paper>
-          <SelectableList onSelect={::this.onSelectList} defaultValue={-1}>
+          <SelectableList onSelect={::this.onSelectList} selectedIndex={this.props.lists.findIndex((list) => list.id == this.props.params.listId)}>
             {lists}
           </SelectableList>
         </Paper>
@@ -96,7 +95,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    fetchLists: bindActionCreators(actions.fetchLists, dispatch)
+    actions: bindActionCreators(actions, dispatch)
   };
 }
 

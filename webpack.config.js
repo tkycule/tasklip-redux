@@ -36,12 +36,13 @@ let config = getConfig({
       "index.html": context.defaultTemplate({
         title: envVariables.APP_NAME,
         publicPath: isDev ? envVariables.ROOT_URL : "",
-        meta: {}
+        meta: {},
+        head: '<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">'
       })
     };
   },
   devServer: {
-    hostname: "0.0.0.0"
+    port: 4000
   }
 });
 

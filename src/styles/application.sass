@@ -18,3 +18,17 @@ body
   opacity: 0.01
   transform: translateY(-100%)
   transition: all 300ms ease-in !important
+
+.list-enter
+  opacity: 0.01
+
+  &.list-enter-active
+    opacity: 1
+    transition: opacity 500ms ease-in
+
+.list-leave
+  opacity: 1
+
+  &.list-leave-active
+    opacity: 0.01
+    transition: opacity 500ms ease-in

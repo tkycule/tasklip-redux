@@ -1,17 +1,17 @@
 import { expect } from "chai";
 let mock = require("superagent-mocker")(require("superagent"));
-import { List as ImmutableList } from "immutable";
+import { List } from "immutable";
 
-import List from "./List";
+import Task from "./Task";
 
-describe("Model List", () => {
+describe("Model Task", () => {
 
   let model;
   beforeEach(() => {
-    model = new List;
+    model = new Task;
   });
 
-  let columns = ["id", "name", "tasks_count"];
+  let columns = ["id", "list_id", "title", "memo", "done", "alermed_at", "started_at", "ended_at", "created_at", "updated_at"];
   columns.forEach((column) => {
     it(`should set ${column}`, () => {
       expect(model.set(column, "some value")).to.have.property(column, "some value");
@@ -26,16 +26,16 @@ describe("Model List", () => {
       fixtures = [
         {
           id: 1,
-          name: "List.1",
-          "tasks_count": 0
+          list_id: 1,
+          title: "Task.1"
         },
         {
           id: 2,
-          name: "List.2",
-          "tasks_count": 1
+          list_id: 1,
+          name: "Task.2"
         }
       ];
-      mock.get(`${__API_URL__}/lists`, () => {
+      mock.get(`${__API_URL__}/lists/1/tasks`, () => {
         return {
           body: fixtures
         };
@@ -43,13 +43,15 @@ describe("Model List", () => {
     });
 
     it("returns lists", (done) => {
-      List
-        .fetchAll()
+      Task
+        .fetchAll({
+          listId: 1
+        })
         .then((lists) => {
-          expect(lists).to.be.instanceOf(ImmutableList);
+          expect(lists).to.be.instanceOf(List);
           expect(lists.size).to.equal(2);
-          expect(lists.get(0)).to.equal(new List(fixtures[0]));
-          expect(lists.get(1)).to.equal(new List(fixtures[1]));
+          expect(lists.get(0)).to.equal(new Task(fixtures[0]));
+          expect(lists.get(1)).to.equal(new Task(fixtures[1]));
         })
         .then(done).catch(done);
     });
