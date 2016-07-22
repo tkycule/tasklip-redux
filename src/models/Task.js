@@ -1,6 +1,7 @@
 import { Record, List } from "immutable";
 
 import request from "utils/request";
+import moment from "moment";
 
 const TaskRecord = Record({
   id: null,
@@ -8,7 +9,7 @@ const TaskRecord = Record({
   title: null,
   memo: null,
   done: false,
-  alermed_at: null,
+  alarmed_at: null,
   started_at: null,
   ended_at: null,
   created_at: null,
@@ -16,6 +17,12 @@ const TaskRecord = Record({
 });
 
 export default class Task extends TaskRecord {
+
+  static fetch(id) {
+    return request
+      .get(`/tasks/${id}`)
+      .then((res) => new Task(res.body));
+  }
 
   static fetchAll(options) {
     let params = {
@@ -40,6 +47,18 @@ export default class Task extends TaskRecord {
 
   destroy() {
     return request.destroy(`/tasks/${this.id}`);
+  }
+
+  get formattedAlarmedAt() {
+    return this.alarmed_at ? moment(this.alarmed_at).format("LLLL") : "";
+  }
+
+  get formattedStartedAt() {
+    return this.started_at ? moment(this.started_at).format("LLLL") : "";
+  }
+
+  get formattedEndedAt() {
+    return this.ended_at ? moment(this.ended_at).format("LLLL") : "";
   }
 
 }

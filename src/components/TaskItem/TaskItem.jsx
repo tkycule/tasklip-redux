@@ -6,6 +6,8 @@ import Checkbox from "material-ui/Checkbox";
 import IconButton from "material-ui/IconButton";
 import IconMenu from "material-ui/IconMenu";
 import MenuItem from "material-ui/MenuItem";
+import FontIcon from "material-ui/FontIcon";
+import { blue500 } from 'material-ui/styles/colors';
 
 export default class TaskItem extends React.Component {
   static propTypes = {
@@ -33,23 +35,31 @@ export default class TaskItem extends React.Component {
   }
 
   render() {
-    const iconButtonElement = (
-    <IconButton iconClassName="material-icons">
-      more_vert
-    </IconButton>
-    );
+    const iconButtonElement = <IconButton iconClassName="material-icons">
+                                more_vert
+                              </IconButton>;
 
-    const rightIconMenu = (
-    <IconMenu iconButtonElement={iconButtonElement} anchorOrigin={{ horizontal: "right", vertical: "top" }} targetOrigin={{ horizontal: "right", vertical: "top" }}>
-      <MenuItem onClick={::this.onEditClick}> Edit
-      </MenuItem>
-      <MenuItem onClick={::this.onDestroyClick}> Delete
-      </MenuItem>
-    </IconMenu>
-    );
+    const rightIconMenu = <IconMenu iconButtonElement={iconButtonElement} anchorOrigin={{ horizontal: "right", vertical: "top" }} targetOrigin={{ horizontal: "right", vertical: "top" }}>
+                            <MenuItem onClick={::this.onEditClick}> Edit
+                            </MenuItem>
+                            <MenuItem onClick={::this.onDestroyClick}> Delete
+                            </MenuItem>
+                          </IconMenu>;
+
+    let alarmedAt = this.props.task.alarmed_at ? <FontIcon className="material-icons" style={{ fontSize: 16 }} color={blue500}>
+                                                   alarm
+                                                 </FontIcon> : "";
+    let startedAt = this.props.task.started_at ? <FontIcon className="material-icons" style={{ fontSize: 16 }} color={blue500}>
+                                                   today
+                                                 </FontIcon> : "";
+    let primaryText = <span>{this.props.task.title} {alarmedAt}{startedAt}</span>;
 
     return (
-      <ListItem leftCheckbox={<Checkbox checked={this.props.task.done} onCheck={::this.onCheck} />} primaryText={this.props.task.title} rightIconButton={rightIconMenu} />
+      <ListItem
+        leftCheckbox={<Checkbox checked={this.props.task.done} onCheck={::this.onCheck} />}
+        primaryText={primaryText}
+        secondaryTextLines={2}
+        rightIconButton={rightIconMenu} />
       );
   }
 }

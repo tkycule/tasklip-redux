@@ -43,6 +43,15 @@ function* fetchLists() {
   }
 }
 
+function* fetchTask(action) {
+  try {
+    let task = yield call(Task.fetch, action.payload);
+    yield put(actions.fetchTaskSuccess(task));
+  } catch (e) {
+    yield put(actions.fetchTaskFailure(e));
+  }
+}
+
 function* fetchTasks(action) {
   try {
     let tasks = yield call(Task.fetchAll, action.payload);
@@ -70,6 +79,16 @@ function* updateTask(action) {
     let task = yield call(action.payload.task.save.bind(action.payload.task));
     yield put(actions.updateTaskSuccess(task));
     yield put(actions.fetchLists());
+
+    if (action.payload.notification) {
+      yield put(actions.notification({
+        message: "更新しました"
+      }));
+    }
+
+    if (typeof action.payload.onSuccess == "function") {
+      action.payload.onSuccess();
+    }
   } catch (e) {
     yield put(actions.updateTaskFailure(e));
   }
@@ -89,6 +108,7 @@ export default function* rootSaga() {
   yield fork(takeEvery, actions.LOGIN, login);
   yield fork(takeEvery, actions.REGISTER, register);
   yield fork(takeEvery, actions.FETCH_LISTS, fetchLists);
+  yield fork(takeEvery, actions.FETCH_TASK, fetchTask);
   yield fork(takeEvery, actions.FETCH_TASKS, fetchTasks);
   yield fork(takeEvery, actions.ADD_TASK, addTask);
   yield fork(takeEvery, actions.UPDATE_TASK, updateTask);

@@ -11,7 +11,7 @@ describe("Model Task", () => {
     model = new Task;
   });
 
-  let columns = ["id", "list_id", "title", "memo", "done", "alermed_at", "started_at", "ended_at", "created_at", "updated_at"];
+  let columns = ["id", "list_id", "title", "memo", "done", "alarmed_at", "started_at", "ended_at", "created_at", "updated_at"];
   columns.forEach((column) => {
     it(`should set ${column}`, () => {
       expect(model.set(column, "some value")).to.have.property(column, "some value");

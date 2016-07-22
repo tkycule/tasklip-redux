@@ -35,6 +35,16 @@ export function tasks(state = List(), action) {
   return state;
 }
 
+export function task(state = null, action) {
+  switch (action.type) {
+    case actions.FETCH_TASK_SUCCESS:
+      return action.payload;
+    case actions.UPDATE_TASK_SUCCESS:
+      return null;
+  }
+  return state;
+}
+
 const notificationIntialState = {
   message: null
 };
@@ -45,6 +55,10 @@ export function notification(state = notificationIntialState, action) {
       return action.payload;
     case actions.CLEAR_NOTIFICATION:
       return notificationIntialState;
+  }
+
+  if (action.error) {
+    console.error(action.payload);
   }
   return state;
 }

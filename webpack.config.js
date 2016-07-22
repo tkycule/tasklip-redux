@@ -123,13 +123,17 @@ config.resolve.alias = {
 };
 // end Roots
 
+config.externals = {
+  _: "lodash"
+};
+
 // Testing
 if (isTest) {
-  config.externals = {
+  Object.assign(config.externals, {
     "react/addons": true,
     "react/lib/ReactContext": true,
     "react/lib/ExecutionEnvironment": true
-  };
+  });
 
   config.module.noParse = /[/\\]sinon\.js/;
   config.resolve.alias.sinon = "sinon/pkg/sinon";

@@ -43,8 +43,7 @@ export class List extends React.Component {
         showDone: false
       });
       this.props.actions.fetchTasks({
-        listId: nextProps.params.listId,
-        showDone: this.state.showDone
+        listId: nextProps.params.listId
       });
     }
   }

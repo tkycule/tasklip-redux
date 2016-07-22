@@ -7,8 +7,6 @@ import { createStore, applyMiddleware, compose, combineReducers } from "redux";
 import { Provider } from "react-redux";
 import createSagaMiddleware from "redux-saga";
 
-import * as reducers from "reducers";
-
 import "font-awesome/css/font-awesome.css";
 import "styles/application.sass";
 
@@ -28,6 +26,10 @@ import EditTask from "containers/EditTask/EditTask";
 import User from "models/User";
 
 import rootSaga from "sagas/sagas";
+import * as reducers from "reducers";
+
+import moment from "moment";
+moment.locale("ja");
 
 const rootReducer = combineReducers({
   ...reducers,
