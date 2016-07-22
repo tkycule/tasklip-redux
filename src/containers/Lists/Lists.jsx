@@ -6,9 +6,9 @@ import { withRouter } from "react-router";
 
 import Paper from "material-ui/Paper";
 import { List, ListItem, MakeSelectable } from 'material-ui/List';
+import FontIcon from "material-ui/FontIcon";
 
 import * as actions from "actions";
-
 
 let SelectableList = MakeSelectable(List);
 
@@ -16,7 +16,7 @@ function wrapState(ComposedComponent) {
   return class SelectableList extends React.Component {
     static propTypes = {
       children: React.PropTypes.node.isRequired,
-      selectedIndex: React.PropTypes.number.isRequired,
+      selectedIndex: React.PropTypes.string.isRequired,
       onSelect: React.PropTypes.func.isRequired
     };
 
@@ -52,7 +52,7 @@ export class Lists extends React.Component {
 
   onSelectList(index) {
     if (index != -1) {
-      this.props.router.push(`/lists/${this.props.lists.get(index).id}/tasks`);
+      this.props.router.push(`/lists/${index}` + (index != "_config_" ? "/tasks" : ""));
     }
   }
 
@@ -67,18 +67,21 @@ export class Lists extends React.Component {
     let lists;
 
     if (!this.props.lists.isEmpty()) {
-      lists = this.props.lists.map((list, index) => <ListItem key={list.id} value={index} rightIcon={<span style={{ textAlign: "center", lineHeight: "24px" }}>{list.tasks_count}</span>}>
-                                                      {list.name}
-                                                    </ListItem>);
+      lists = this.props.lists.map((list) => <ListItem key={list.id} value={String(list.id)} rightIcon={<span style={{ textAlign: "center", lineHeight: "24px" }}>{list.tasks_count}</span>}>
+                                               {list.name}
+                                             </ListItem>);
     } else {
-      lists = <ListItem primaryText="Loading..." />;
+      lists = <ListItem value="-1" primaryText="Loading..." />;
     }
 
     return (
       <div>
         <Paper>
-          <SelectableList onSelect={::this.onSelectList} selectedIndex={this.props.lists.findIndex((list) => list.id == this.props.params.listId)}>
+          <SelectableList onSelect={::this.onSelectList} selectedIndex={this.props.params.listId}>
             {lists}
+            <ListItem value="_config_" primaryText="&nbsp;" leftIcon={<FontIcon className="material-icons">
+                                                                        format_list_bulleted
+                                                                      </FontIcon>} />
           </SelectableList>
         </Paper>
         {this.props.children}

@@ -23,6 +23,7 @@ import Home from "containers/Home/Home";
 import Lists from "containers/Lists/Lists";
 import List from "containers/Lists/List";
 import EditTask from "containers/EditTask/EditTask";
+import ConfigLists from "containers/ConfigLists/ConfigLists";
 import User from "models/User";
 
 import rootSaga from "sagas/sagas";
@@ -69,6 +70,7 @@ ReactDOM.render(
         <Route path="/" component={App}>
           <IndexRoute component={Home} onEnter={guestOnly} />
           <Route path="lists" component={Lists} onEnter={userOnly}>
+            <Route path="_config_" component={ConfigLists} />
             <Route path=":listId/tasks" component={List} />
             <Route path=":listId/tasks/:taskId/edit" component={EditTask} />
           </Route>
