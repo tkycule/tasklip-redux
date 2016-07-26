@@ -13,6 +13,7 @@ createSuite("addTask");
 createSuite("updateTask");
 createSuite("destroyTask");
 createSuite("addList");
+createSuite("updateList");
 createSuite("destroyList");
 
 function createSuite(action, noSuccessAndFailure = false) {

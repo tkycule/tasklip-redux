@@ -40,7 +40,11 @@ export class ConfigLists extends React.Component {
         </Formsy.Form>
         <UIList>
           <ReactCSSTransitionGroup transitionName="list" transitionEnterTimeout={500} transitionLeaveTimeout={500}>
-            {this.props.lists.map((list) => <ListItem list={list} key={list.id} destroyList={this.props.actions.destroyList} />)}
+            {this.props.lists.map((list) => <ListItem
+                                              list={list}
+                                              key={list.id}
+                                              destroyList={this.props.actions.destroyList}
+                                              updateList={this.props.actions.updateList} />)}
           </ReactCSSTransitionGroup>
         </UIList>
       </Paper>

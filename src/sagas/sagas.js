@@ -133,6 +133,21 @@ function* destroyList(action) {
   }
 }
 
+function* updateList(action) {
+  try {
+    let list = yield call(action.payload.list.save.bind(action.payload.list));
+    yield put(actions.updateListSuccess(list));
+    yield put(actions.fetchLists());
+
+    yield put(actions.notification({
+      message: "更新しました"
+    }));
+
+  } catch (e) {
+    yield put(actions.updateListFailure(e));
+  }
+}
+
 export default function* rootSaga() {
   yield fork(takeEvery, actions.LOGIN, login);
   yield fork(takeEvery, actions.REGISTER, register);
@@ -144,4 +159,5 @@ export default function* rootSaga() {
   yield fork(takeEvery, actions.DESTROY_TASK, destroyTask);
   yield fork(takeEvery, actions.ADD_LIST, addList);
   yield fork(takeEvery, actions.DESTROY_LIST, destroyList);
+  yield fork(takeEvery, actions.UPDATE_LIST, updateList);
 }

@@ -4,6 +4,8 @@ import ImmutablePropTypes from "react-immutable-proptypes";
 import { ListItem as UIListItem } from "material-ui/List";
 import IconButton from "material-ui/IconButton";
 
+import InlineEdit from "react-edit-inline";
+
 export default class ListItem extends React.Component {
   static propTypes = {
     list: ImmutablePropTypes.record.isRequired
@@ -17,9 +19,20 @@ export default class ListItem extends React.Component {
     }
   }
 
+  onNameChange(data) {
+    this.props.updateList({
+      list: this.props.list.set("name", data.name)
+    });
+  }
+
   render() {
+    const inlineEdit = <InlineEdit
+                         text={this.props.list.name}
+                         paramName="name"
+                         change={::this.onNameChange}
+                         style={{ padding: "5px", fontSize: "inherit", width: "100%" }} />;
     return (
-      <UIListItem primaryText={this.props.list.name} rightIconButton={<IconButton iconClassName="fa fa-times" onClick={::this.onDestroyClick} />} />
+      <UIListItem primaryText={inlineEdit} rightIconButton={<IconButton iconClassName="fa fa-times" onClick={::this.onDestroyClick} />} />
       );
   }
 }
