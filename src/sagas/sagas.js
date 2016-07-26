@@ -104,6 +104,35 @@ function* destroyTask(action) {
   }
 }
 
+function* addList(action) {
+  try {
+    let list = yield call(action.payload.list.save.bind(action.payload.list));
+    if (typeof action.payload.onSuccess == "function") {
+      action.payload.onSuccess();
+    }
+    yield put(actions.addListSuccess(list));
+    yield put(actions.fetchLists());
+    yield put(actions.notification({
+      message: "リストを追加しました"
+    }));
+  } catch (e) {
+    yield put(actions.addListFailure(e));
+  }
+}
+
+function* destroyList(action) {
+  try {
+    yield call(action.payload.list.destroy.bind(action.payload.list));
+    yield put(actions.destroyListSuccess(action.payload.list));
+    yield put(actions.fetchLists());
+    yield put(actions.notification({
+      message: "リストを削除しました"
+    }));
+  } catch (e) {
+    yield put(actions.destroyListFailure(e));
+  }
+}
+
 export default function* rootSaga() {
   yield fork(takeEvery, actions.LOGIN, login);
   yield fork(takeEvery, actions.REGISTER, register);
@@ -113,4 +142,6 @@ export default function* rootSaga() {
   yield fork(takeEvery, actions.ADD_TASK, addTask);
   yield fork(takeEvery, actions.UPDATE_TASK, updateTask);
   yield fork(takeEvery, actions.DESTROY_TASK, destroyTask);
+  yield fork(takeEvery, actions.ADD_LIST, addList);
+  yield fork(takeEvery, actions.DESTROY_LIST, destroyList);
 }

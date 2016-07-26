@@ -6,7 +6,6 @@ import { withRouter } from "react-router";
 
 import Paper from "material-ui/Paper";
 import { List, ListItem, MakeSelectable } from 'material-ui/List';
-import FontIcon from "material-ui/FontIcon";
 
 import * as actions from "actions";
 
@@ -77,11 +76,9 @@ export class Lists extends React.Component {
     return (
       <div>
         <Paper>
-          <SelectableList onSelect={::this.onSelectList} selectedIndex={this.props.params.listId}>
+          <SelectableList onSelect={::this.onSelectList} selectedIndex={this.props.params.listId || "-1"}>
             {lists}
-            <ListItem value="_config_" primaryText="&nbsp;" leftIcon={<FontIcon className="material-icons">
-                                                                        format_list_bulleted
-                                                                      </FontIcon>} />
+            <ListItem value="_config_" primaryText="&nbsp;" leftIcon={<i className="fa fa-list" />} />
           </SelectableList>
         </Paper>
         {this.props.children}

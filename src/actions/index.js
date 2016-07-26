@@ -1,7 +1,7 @@
 import { createAction } from "redux-actions";
 import changeCase from "change-case";
 
-createSuite("login", true);
+createSuite("login");
 createSuite("logout", true);
 createSuite("register");
 createSuite("notification", true);
@@ -12,6 +12,8 @@ createSuite("fetchTasks");
 createSuite("addTask");
 createSuite("updateTask");
 createSuite("destroyTask");
+createSuite("addList");
+createSuite("destroyList");
 
 function createSuite(action, noSuccessAndFailure = false) {
   let constant = changeCase.constantCase(action);

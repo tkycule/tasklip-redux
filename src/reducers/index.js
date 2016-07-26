@@ -17,6 +17,10 @@ export function lists(state = List(), action) {
   switch (action.type) {
     case actions.FETCH_LISTS_SUCCESS:
       return action.payload;
+    case actions.ADD_LIST_SUCCESS:
+      return state.unshift(action.payload);
+    case actions.DESTROY_LIST_SUCCESS:
+      return state.filter((list) => list.id !== action.payload.id);
   }
   return state;
 }

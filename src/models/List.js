@@ -16,4 +16,19 @@ export default class List extends ListRecord {
       .then((res) => new ImmutableList(res.body.map((attributes) => new List(attributes))));
   }
 
+  save() {
+    if (this.id == null) {
+      return request
+        .post(`/lists/`, this.toJSON())
+        .then((res) => new List(res.body));
+    } else {
+      return request
+        .patch(`/lists/${this.id}`, this.toJSON())
+        .then((res) => new List(res.body));
+    }
+  }
+
+  destroy() {
+    return request.destroy(`/lists/${this.id}`);
+  }
 }

@@ -6,8 +6,6 @@ import Checkbox from "material-ui/Checkbox";
 import IconButton from "material-ui/IconButton";
 import IconMenu from "material-ui/IconMenu";
 import MenuItem from "material-ui/MenuItem";
-import FontIcon from "material-ui/FontIcon";
-import { blue500 } from 'material-ui/styles/colors';
 
 export default class TaskItem extends React.Component {
   static propTypes = {
@@ -35,10 +33,7 @@ export default class TaskItem extends React.Component {
   }
 
   render() {
-    const iconButtonElement = <IconButton iconClassName="material-icons">
-                                more_vert
-                              </IconButton>;
-
+    const iconButtonElement = <IconButton iconClassName="fa fa-ellipsis-v" />;
     const rightIconMenu = <IconMenu iconButtonElement={iconButtonElement} anchorOrigin={{ horizontal: "right", vertical: "top" }} targetOrigin={{ horizontal: "right", vertical: "top" }}>
                             <MenuItem onClick={::this.onEditClick}> Edit
                             </MenuItem>
@@ -46,12 +41,8 @@ export default class TaskItem extends React.Component {
                             </MenuItem>
                           </IconMenu>;
 
-    let alarmedAt = this.props.task.alarmed_at ? <FontIcon className="material-icons" style={{ fontSize: 16 }} color={blue500}>
-                                                   alarm
-                                                 </FontIcon> : "";
-    let startedAt = this.props.task.started_at ? <FontIcon className="material-icons" style={{ fontSize: 16 }} color={blue500}>
-                                                   today
-                                                 </FontIcon> : "";
+    let alarmedAt = this.props.task.alarmed_at ? <i className="fa fa-bell" /> : "";
+    let startedAt = this.props.task.started_at ? <i className="fa fa-calendar" /> : "";
     let primaryText = <span>{this.props.task.title} {alarmedAt}{startedAt}</span>;
 
     return (
