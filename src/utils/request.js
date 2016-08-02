@@ -45,11 +45,14 @@ function send(method, url, options = {}) {
 
     const currentUser = User.getCurrentUser();
     if (currentUser) {
-      req.set("Authorization", currentUser.authentication_token);
+      req.set("Authorization", `Bearer ${currentUser.authentication_token}`);
     }
 
     req.end((err, res) => {
       if (err) {
+        if (currentUser && err.status == 401) {
+          currentUser.logout();
+        }
         reject(err);
       }
       resolve(res);

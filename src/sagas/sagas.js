@@ -27,7 +27,7 @@ function* login(action) {
 function* register(action) {
   try {
     let user = yield call(User.register, action.payload.email, action.payload.password);
-    yield put(actions.replace("/lists"));
+    yield put(replace("/lists"));
     yield put(actions.registerSuccess(user));
   } catch (e) {
     yield put(actions.registerFailure(e));
@@ -39,6 +39,9 @@ function* fetchLists() {
     let lists = yield call(List.fetchAll);
     yield put(actions.fetchListsSuccess(lists));
   } catch (e) {
+    if (e.status == 401) {
+      yield put(replace("/"));
+    }
     yield put(actions.fetchListsFailure(e));
   }
 }
