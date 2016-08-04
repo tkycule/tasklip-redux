@@ -30,6 +30,10 @@ function* register(action) {
     yield put(replace("/lists"));
     yield put(actions.registerSuccess(user));
   } catch (e) {
+    yield put(actions.notification({
+      message: "ログインに失敗しました",
+      type: "error"
+    }));
     yield put(actions.registerFailure(e));
   }
 }

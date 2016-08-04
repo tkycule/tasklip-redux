@@ -4,40 +4,9 @@ import { bindActionCreators } from "redux";
 import ImmutablePropTypes from "react-immutable-proptypes";
 import { withRouter } from "react-router";
 
-import Paper from "material-ui/Paper";
-import { List, ListItem, MakeSelectable } from 'material-ui/List';
+import { Nav, NavItem, Panel } from "react-bootstrap";
 
 import * as actions from "actions";
-
-let SelectableList = MakeSelectable(List);
-
-function wrapState(ComposedComponent) {
-  return class SelectableList extends React.Component {
-    static propTypes = {
-      children: React.PropTypes.node.isRequired,
-      selectedIndex: React.PropTypes.string.isRequired,
-      onSelect: React.PropTypes.func.isRequired
-    };
-
-    componentWillMount() {
-      this.props.onSelect(this.props.selectedIndex);
-    }
-
-    handleRequestChange = (event, index) => {
-      this.props.onSelect(index);
-    };
-
-    render() {
-      return (
-        <ComposedComponent value={this.props.selectedIndex} onChange={this.handleRequestChange}>
-          {this.props.children}
-        </ComposedComponent>
-        );
-    }
-  };
-}
-
-SelectableList = wrapState(SelectableList);
 
 export class Lists extends React.Component {
 
@@ -66,21 +35,28 @@ export class Lists extends React.Component {
     let lists;
 
     if (!this.props.lists.isEmpty()) {
-      lists = this.props.lists.map((list) => <ListItem key={list.id} value={String(list.id)} rightIcon={<span style={{ textAlign: "center", lineHeight: "24px" }}>{list.tasks_count}</span>}>
-                                               {list.name}
-                                             </ListItem>);
+      lists = this.props.lists.map((list) => <NavItem key={list.id} eventKey={String(list.id)}>
+                                               {list.name} [
+                                               {list.tasks_count}]
+                                             </NavItem>);
     } else {
-      lists = <ListItem value="-1" primaryText="Loading..." />;
+      lists = <NavItem eventKey={-1}>
+                Loading...
+              </NavItem>;
     }
 
     return (
       <div>
-        <Paper>
-          <SelectableList onSelect={::this.onSelectList} selectedIndex={this.props.params.listId || "-1"}>
-            {lists}
-            <ListItem value="_config_" primaryText="&nbsp;" leftIcon={<i className="fa fa-list" />} />
-          </SelectableList>
-        </Paper>
+        <Nav
+          bsStyle="pills"
+          onSelect={::this.onSelectList}
+          activeKey={this.props.params.listId || "_config_"}
+          style={{ marginBottom: "10px", border: "1px solid #ccc", borderRadius: "4px" }}>
+          {lists}
+          <NavItem eventKey="_config_">
+            <i className="fa fa-list" />
+          </NavItem>
+        </Nav>
         {this.props.children}
       </div>
       );

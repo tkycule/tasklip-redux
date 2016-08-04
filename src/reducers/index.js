@@ -63,6 +63,10 @@ export function notification(state = notificationIntialState, action) {
 
   if (action.error) {
     console.error(action.payload);
+    return {
+      message: action.payload.response.text,
+      type: "danger"
+    };
   }
   return state;
 }

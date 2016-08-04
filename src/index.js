@@ -32,6 +32,9 @@ import * as reducers from "reducers";
 import moment from "moment";
 moment.locale("ja");
 
+import "bootstrap/dist/css/bootstrap.css";
+import "react-datetime/css/react-datetime.css";
+
 const rootReducer = combineReducers({
   ...reducers,
   routing: routerReducer

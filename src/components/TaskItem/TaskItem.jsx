@@ -1,11 +1,8 @@
 import React from "react";
 import ImmutablePropTypes from "react-immutable-proptypes";
 
-import { ListItem } from "material-ui/List";
-import Checkbox from "material-ui/Checkbox";
-import IconButton from "material-ui/IconButton";
-import IconMenu from "material-ui/IconMenu";
-import MenuItem from "material-ui/MenuItem";
+import { ListGroupItem } from "react-bootstrap";
+import { Link } from "react-router";
 
 export default class TaskItem extends React.Component {
   static propTypes = {
@@ -14,14 +11,10 @@ export default class TaskItem extends React.Component {
     router: React.PropTypes.object.isRequired
   }
 
-  onCheck(event, isInputChecked) {
+  onCheck(event) {
     this.props.updateTask({
-      task: this.props.task.set("done", isInputChecked)
+      task: this.props.task.set("done", event.target.checked)
     });
-  }
-
-  onEditClick() {
-    this.props.router.push(`/lists/${this.props.task.list_id}/tasks/${this.props.task.id}/edit`);
   }
 
   onDestroyClick() {
@@ -33,24 +26,34 @@ export default class TaskItem extends React.Component {
   }
 
   render() {
-    const iconButtonElement = <IconButton iconClassName="fa fa-ellipsis-v" />;
-    const rightIconMenu = <IconMenu iconButtonElement={iconButtonElement} anchorOrigin={{ horizontal: "right", vertical: "top" }} targetOrigin={{ horizontal: "right", vertical: "top" }}>
-                            <MenuItem onClick={::this.onEditClick}> Edit
-                            </MenuItem>
-                            <MenuItem onClick={::this.onDestroyClick}> Delete
-                            </MenuItem>
-                          </IconMenu>;
+    let alarmedAt;
+    let startedAt;
+    if (this.props.task.alarmed_at) {
+      alarmedAt = <div>
+                    <i className="fa fa-bell" style={{ marginRight: "5px" }} />
+                    {this.props.task.formattedAlarmedAt}
+                  </div>;
+    }
 
-    let alarmedAt = this.props.task.alarmed_at ? <i className="fa fa-bell" /> : "";
-    let startedAt = this.props.task.started_at ? <i className="fa fa-calendar" /> : "";
-    let primaryText = <span>{this.props.task.title} {alarmedAt}{startedAt}</span>;
-
+    if (this.props.task.started_at) {
+      startedAt = <div>
+                    <i className="fa fa-calendar" style={{ marginRight: "5px" }} />
+                    {this.props.task.formattedStartedAt}&#xFF5E;
+                    {this.props.task.formattedEndedAt}
+                  </div>;
+    }
     return (
-      <ListItem
-        leftCheckbox={<Checkbox checked={this.props.task.done} onCheck={::this.onCheck} />}
-        primaryText={primaryText}
-        secondaryTextLines={2}
-        rightIconButton={rightIconMenu} />
+      <ListGroupItem style={{ display: "flex", alignItems: "center" }}>
+        <input type="checkbox" checked={this.props.task.done} onChange={::this.onCheck} />
+        <Link to={`/lists/${this.props.task.list_id}/tasks/${this.props.task.id}/edit`} style={{ marginLeft: "10px" }}>
+        <div>
+          {this.props.task.title}
+        </div>
+        {alarmedAt}
+        {startedAt}
+        </Link>
+        <i style={{ marginLeft: "auto", cursor: "pointer" }} className="fa fa-remove" onClick={::this.onDestroyClick} />
+      </ListGroupItem>
       );
   }
 }

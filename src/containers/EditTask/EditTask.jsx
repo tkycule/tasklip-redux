@@ -1,34 +1,46 @@
 import React from "react";
+import ImmutablePropTypes from "react-immutable-proptypes";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { withRouter } from "react-router";
 
-import { Card, CardText, CardActions } from "material-ui/Card";
-import RaisedButton from "material-ui/RaisedButton";
-import MenuItem from "material-ui/MenuItem";
-import Formsy from "formsy-react";
-import { FormsyText, FormsySelect, FormsyCheckbox } from "formsy-material-ui/lib";
+import { Button, Well, FormGroup, ControlLabel, InputGroup } from "react-bootstrap";
+import Form from "formsy-react-components/release/form";
+import { Input, Checkbox, Textarea, Select } from "formsy-react-components";
+import DateTime from "react-datetime";
 
 import * as actions from "actions";
-import DateTimePicker from "components/DateTimePicker/DateTimePicker";
-
 
 export class EditTask extends React.Component {
 
   static propTypes = {
+    lists: ImmutablePropTypes.list,
+    task: ImmutablePropTypes.record,
+    actions: React.PropTypes.object.isRequired
   }
-
 
   constructor(props) {
     super(props);
 
     this.state = {
-      canSubmit: false
+      canSubmit: false,
+      alarmedAt: null
     };
   }
 
   componentDidMount() {
     this.props.actions.fetchTask(this.props.params.taskId);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.task) {
+      this.setState({
+        title: nextProps.task.title,
+        alarmedAt: (nextProps.task.alarmed_at ? new Date(nextProps.task.alarmed_at) : null),
+        startedAt: (nextProps.task.started_at ? new Date(nextProps.task.started_at) : null),
+        endedAt: (nextProps.task.ended_at ? new Date(nextProps.task.ended_at) : null)
+      });
+    }
   }
 
   enableButton() {
@@ -44,10 +56,9 @@ export class EditTask extends React.Component {
   }
 
   onSubmit(data) {
-    data = _.pickBy(data, (value, key) => key.indexOf("__") == -1);
-    data.alarmed_at = this.refs.alarmedAt.getValue();
-    data.started_at = this.refs.startedAt.getValue();
-    data.ended_at = this.refs.endedAt.getValue();
+    data.alarmed_at = this.state.alarmedAt;
+    data.started_at = this.state.startedAt;
+    data.ended_at = this.state.endedAt;
 
     let task = this.props.task.merge(data);
     this.props.actions.updateTask({
@@ -65,65 +76,119 @@ export class EditTask extends React.Component {
     this.props.router.push(`/lists/${this.props.task.list_id}/tasks`);
   }
 
+  onDateTimeChange(moment, attr) {
+    this.setState({
+      [attr]: moment.toDate()
+    });
+  }
+
+  onClickClearDateTime(attr) {
+    this.setState({
+      [attr]: null
+    });
+  }
+
   render() {
     let form;
     let listItems;
 
     if (this.props.lists) {
-      listItems = this.props.lists.map((list) => <MenuItem value={list.id} primaryText={list.name} key={list.id} />);
+      listItems = this.props.lists.map((list) => {
+        return {
+          value: list.id,
+          label: list.name
+        };
+      });
     } else {
-      listItems = <MenuItem value={-1} primaryText="Loading..." />;
+      listItems = {
+        value: -1,
+        label: "Loading..."
+      };
     }
 
     if (this.props.task) {
-      form = <Card>
-               <CardText>
-                 <FormsyText
-                   name="title"
-                   floatingLabelText="Title"
-                   fullWidth={true}
-                   defaultValue={this.props.task.title}
-                   required />
-                 <FormsyText
-                   name="memo"
-                   floatingLabelText="memo"
-                   fullWidth={true}
-                   defaultValue={this.props.task.memo}
-                   multiLine={true}
-                   rows={5} />
-                 <FormsySelect name="list_id" value={this.props.task.list_id}>
-                   {listItems}
-                 </FormsySelect>
-                 <FormsyCheckbox
-                   name="done"
-                   defaultChecked={this.props.task.done}
-                   label="DONE"
-                   style={{ marginTop: 16 }} />
-                 <DateTimePicker ref="alarmedAt" label="alarmed_at" date={this.props.task.alarmed_at} />
-                 <DateTimePicker ref="startedAt" label="started_at" date={this.props.task.started_at} />
-                 <DateTimePicker ref="endedAt" label="ended_at" date={this.props.task.ended_at} />
-               </CardText>
-               <CardActions>
-                 <RaisedButton label="BACK" onClick={::this.onBackClick} />
-                 <RaisedButton
-                   type="submit"
-                   label="UPDATE"
-                   primary={true}
-                   disabled={!this.state.canSubmit} />
-               </CardActions>
-             </Card>;
+      form = <Form
+               layout="vertical"
+               onValid={::this.enableButton}
+               onInvalid={::this.disableButton}
+               onSubmit={::this.onSubmit}>
+               <Input
+                 name="title"
+                 label="Title"
+                 type="text"
+                 value={this.props.task.title}
+                 required />
+               <Textarea
+                 name="memo"
+                 label="memo"
+                 value={this.props.task.memo || ""}
+                 rows={5} />
+               <Select
+                 label="List"
+                 name="list_id"
+                 value={this.props.task.list_id}
+                 options={listItems} />
+               <Checkbox
+                 layout="elementOnly"
+                 name="done"
+                 checked={this.props.task.done || false}
+                 label="DONE" />
+               <FormGroup>
+                 <ControlLabel>
+                   Alarm
+                 </ControlLabel>
+                 <InputGroup>
+                   <DateTime value={this.state.alarmedAt} onChange={(moment) => this.onDateTimeChange(moment, "alarmedAt")} />
+                   <InputGroup.Button>
+                     <Button onClick={this.onClickClearDateTime.bind(this, "alarmedAt")}>
+                       <i className="fa fa-minus-circle"></i>
+                     </Button>
+                   </InputGroup.Button>
+                 </InputGroup>
+               </FormGroup>
+               <FormGroup>
+                 <ControlLabel>
+                   期間
+                 </ControlLabel>
+                 <InputGroup>
+                   <DateTime value={this.state.startedAt} onChange={(moment) => this.onDateTimeChange(moment, "startedAt")} />
+                   <InputGroup.Button>
+                     <Button onClick={this.onClickClearDateTime.bind(this, "startedAt")}>
+                       <i className="fa fa-minus-circle"></i>
+                     </Button>
+                   </InputGroup.Button>
+                   <InputGroup.Addon>
+                     〜
+                   </InputGroup.Addon>
+                   <DateTime value={this.state.endedAt} onChange={(moment) => this.onDateTimeChange(moment, "endedAt")} />
+                   <InputGroup.Button>
+                     <Button onClick={this.onClickClearDateTime.bind(this, "endedAt")}>
+                       <i className="fa fa-minus-circle"></i>
+                     </Button>
+                   </InputGroup.Button>
+                 </InputGroup>
+               </FormGroup>
+               <Button
+                 bsStyle="primary"
+                 block
+                 type="submit"
+                 disabled={!this.state.canSubmit}>
+                 UPDATE
+               </Button>
+               <Button block onClick={::this.onBackClick}>
+                 BACK
+               </Button>
+             </Form> ;
     } else {
-      form = <Card>
+      form = <div>
                Loading...
-             </Card>;
+             </div>;
     }
 
     return (
-      <div>
-        <Formsy.Form onValid={::this.enableButton} onInvalid={::this.disableButton} onSubmit={::this.onSubmit}>
-          {form}
-        </Formsy.Form>
-      </div>
+      <Well>
+        {form}
+      </Well>
       );
   }
 }

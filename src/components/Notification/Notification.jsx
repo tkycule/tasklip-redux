@@ -1,19 +1,11 @@
 import React from "react";
 import ReactCSSTransitionGroup from "react/lib/ReactCSSTransitionGroup";
 
-import { Card, CardHeader } from "material-ui/Card";
-import { green100, yellow100, red100 } from "material-ui/styles/colors";
+import { Alert } from "react-bootstrap";
 
 export default class Notification extends React.Component {
 
   static propTypes = {
-
-  }
-
-  static backgroundColors = {
-    "success": green100,
-    "warning": yellow100,
-    "error": red100
   }
 
   constructor(props) {
@@ -49,7 +41,6 @@ export default class Notification extends React.Component {
       top: 0,
       left: 0,
       right: 0,
-      backgroundColor: this.constructor.backgroundColors[this.state.type],
       textAlign: "center",
       cursor: "pointer"
     };
@@ -67,9 +58,13 @@ export default class Notification extends React.Component {
   render() {
     let component;
     if (this.state.message != null) {
-      component = <Card style={this.getStyle.apply(this)} onClick={::this.onClickCard} className={this.state.type}>
-                    <CardHeader title={this.props.notification.message} />
-                  </Card>
+      component = <Alert
+                    bsStyle={this.props.notification.type}
+                    style={this.getStyle.apply(this)}
+                    onClick={::this.onClickCard}
+                    className={this.state.type}>
+                    {this.props.notification.message}
+                  </Alert>
       ;
     }
 

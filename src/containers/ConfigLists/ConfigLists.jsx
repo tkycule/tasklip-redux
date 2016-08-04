@@ -2,13 +2,10 @@ import React from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import ReactCSSTransitionGroup from "react/lib/ReactCSSTransitionGroup";
-import { withRouter } from "react-router";
 
-import Formsy from "formsy-react";
-import { FormsyText } from "formsy-material-ui/lib";
-
-import Paper from "material-ui/Paper";
-import { List as UIList } from "material-ui/List";
+import { Button, ListGroup } from "react-bootstrap";
+import Form from "formsy-react-components/release/form";
+import { Input } from "formsy-react-components";
 
 import List from "models/List";
 import ListItem from "components/ListItem/ListItem";
@@ -28,17 +25,20 @@ export class ConfigLists extends React.Component {
 
   render() {
     return (
-      <Paper>
-        <Formsy.Form onSubmit={::this.onSubmit} style={{ padding: "0px 20px 0px 20px" }}>
-          <FormsyText
-            ref="name"
+      <div>
+        <Form layout="elementOnly" onSubmit={::this.onSubmit} style={{ marginBottom: "10px" }}>
+          <Input
             name="name"
-            fullWidth={true}
+            type="text"
+            value=""
             required
-            floatingLabelText="New List"
-            autocomplete="off" />
-        </Formsy.Form>
-        <UIList>
+            placeholder="New List"
+            autoComplete="off"
+            buttonAfter={<Button type="submit">
+                           <i className="fa fa-plus" />
+                         </Button>} />
+        </Form>
+        <ListGroup>
           <ReactCSSTransitionGroup transitionName="list" transitionEnterTimeout={500} transitionLeaveTimeout={500}>
             {this.props.lists.map((list) => <ListItem
                                               list={list}
@@ -46,8 +46,8 @@ export class ConfigLists extends React.Component {
                                               destroyList={this.props.actions.destroyList}
                                               updateList={this.props.actions.updateList} />)}
           </ReactCSSTransitionGroup>
-        </UIList>
-      </Paper>
+        </ListGroup>
+      </div>
       );
   }
 }

@@ -36,8 +36,7 @@ let config = getConfig({
       "index.html": context.defaultTemplate({
         title: envVariables.APP_NAME,
         publicPath: isDev ? envVariables.ROOT_URL : "",
-        meta: {},
-        head: '<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">'
+        meta: {}
       })
     };
   },
@@ -62,39 +61,39 @@ config.plugins = [
 // END ENV variables
 
 // CSS modules
-const cssModulesNames = `${isDev ? "[path][name]__[local]__" : ""}[hash:base64:5]`;
-
-const matchCssLoaders = /(^|!)(css-loader)($|!)/;
-
-const findLoader = (loaders, match) => {
-  const found = loaders.filter(l => l && l.loader && l.loader.match(match));
-  return found ? found[0] : null;
-};
-
-// existing css loader
-const cssloader = findLoader(config.module.loaders, matchCssLoaders);
-
-const newloader = Object.assign({}, cssloader, {
-  test: /\.module\.css$/,
-  include: [src, /flexbox/],
-  loader: cssloader.loader.replace(matchCssLoaders, `$1$2?modules&localIdentName=${cssModulesNames}$3`)
-});
-config.module.loaders.push(newloader);
-cssloader.test = new RegExp(`[^module]${cssloader.test.source}`);
-cssloader.loader = newloader.loader;
-
-config.module.loaders.push({
-  test: /flexboxgrid/,
-  loader: "style!css?modules",
-  include: /flexboxgrid/
-});
-
-config.module.loaders.push({
-  test: /\.css$/,
-  include: [modules],
-  loader: "style!css",
-  exclude: /flexboxgrid/
-});
+// const cssModulesNames = `${isDev ? "[path][name]__[local]__" : ""}[hash:base64:5]`;
+//
+// const matchCssLoaders = /(^|!)(css-loader)($|!)/;
+//
+// const findLoader = (loaders, match) => {
+//   const found = loaders.filter(l => l && l.loader && l.loader.match(match));
+//   return found ? found[0] : null;
+// };
+//
+// // existing css loader
+// const cssloader = findLoader(config.module.loaders, matchCssLoaders);
+//
+// const newloader = Object.assign({}, cssloader, {
+//   test: /\.module\.css$/,
+//   include: [src, /flexbox/],
+//   loader: cssloader.loader.replace(matchCssLoaders, `$1$2?modules&localIdentName=${cssModulesNames}$3`)
+// });
+// config.module.loaders.push(newloader);
+// cssloader.test = new RegExp(`[^module]${cssloader.test.source}`);
+// cssloader.loader = newloader.loader;
+//
+// config.module.loaders.push({
+//   test: /flexboxgrid/,
+//   loader: "style!css?modules",
+//   include: /flexboxgrid/
+// });
+//
+// config.module.loaders.push({
+//   test: /\.css$/,
+//   include: [modules],
+//   loader: "style!css",
+//   exclude: /flexboxgrid/
+// });
 
 // console.log(config.module.loaders);
 // CSS modules
@@ -124,7 +123,6 @@ config.resolve.alias = {
 // end Roots
 
 config.externals = {
-  _: "lodash"
 };
 
 // Testing
@@ -151,4 +149,5 @@ if (isTest) {
 }
 // End Testing
 
+// console.log(config);
 module.exports = config;

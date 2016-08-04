@@ -5,12 +5,9 @@ import ImmutablePropTypes from "react-immutable-proptypes";
 import ReactCSSTransitionGroup from "react/lib/ReactCSSTransitionGroup";
 import { withRouter } from "react-router";
 
-import Formsy from "formsy-react";
-import { FormsyText } from "formsy-material-ui/lib";
-
-import Paper from "material-ui/Paper";
-import { List as UIList } from "material-ui/List";
-import RaisedButton from "material-ui/RaisedButton";
+import { Button, Panel, ListGroup, ListGroupItem } from "react-bootstrap";
+import { Input } from "formsy-react-components";
+import Form from "formsy-react-components/release/form";
 
 import * as actions from "actions";
 
@@ -55,7 +52,6 @@ export class List extends React.Component {
       onSuccess: resetForm
     });
     resetForm();
-    // TODO: バグ修正待ち https://github.com/mbrookes/formsy-material-ui/pull/106
   }
 
   onDoneClick() {
@@ -69,19 +65,22 @@ export class List extends React.Component {
   }
 
   render() {
-    // TODO: autocompleteが設定できない https://github.com/callemall/material-ui/issues/4639
     return (
-      <Paper>
-        <Formsy.Form onSubmit={::this.onSubmit} style={{ padding: "0px 20px 0px 20px" }}>
-          <FormsyText
-            ref="title"
+      <div>
+        <Form layout="elementOnly" onSubmit={::this.onSubmit} style={{ marginBottom: "10px" }}>
+          <Input
             name="title"
+            type="text"
+            value=""
             fullWidth={true}
             required
-            floatingLabelText="New Task"
-            autocomplete="off" />
-        </Formsy.Form>
-        <UIList>
+            placeholder="New Task"
+            autoComplete="off"
+            buttonAfter={<Button type="submit">
+                           <i className="fa fa-plus" />
+                         </Button>} />
+        </Form>
+        <ListGroup>
           <ReactCSSTransitionGroup transitionName="list" transitionEnterTimeout={500} transitionLeaveTimeout={500}>
             {this.props.tasks.map((task) => <TaskItem
                                               task={task}
@@ -90,11 +89,11 @@ export class List extends React.Component {
                                               router={this.props.router}
                                               key={task.id} />)}
           </ReactCSSTransitionGroup>
-        </UIList>
-        <div style={{ padding: "20px 10px" }}>
-          <RaisedButton fullWidth={true} onClick={this.onDoneClick.bind(this)} label={this.state.showDone ? "完了済みは表示しない" : "完了済みも表示する"} />
-        </div>
-      </Paper>
+        </ListGroup>
+        <Button block onClick={this.onDoneClick.bind(this)}>
+          {this.state.showDone ? "完了済みは表示しない" : "完了済みも表示する"}
+        </Button>
+      </div>
       );
   }
 }

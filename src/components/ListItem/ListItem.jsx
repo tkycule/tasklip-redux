@@ -1,6 +1,7 @@
 import React from "react";
 import ImmutablePropTypes from "react-immutable-proptypes";
 
+import { ListGroupItem } from "react-bootstrap";
 import { ListItem as UIListItem } from "material-ui/List";
 import IconButton from "material-ui/IconButton";
 
@@ -32,7 +33,10 @@ export default class ListItem extends React.Component {
                          change={::this.onNameChange}
                          style={{ padding: "5px", fontSize: "inherit", width: "100%" }} />;
     return (
-      <UIListItem primaryText={inlineEdit} rightIconButton={<IconButton iconClassName="fa fa-times" onClick={::this.onDestroyClick} />} />
+      <ListGroupItem style={{ display: "flex", alignItems: "center" }}>
+        {inlineEdit}
+        <i style={{ marginLeft: "auto", cursor: "pointer" }} className="fa fa-remove" onClick={::this.onDestroyClick} />
+      </ListGroupItem>
       );
   }
 }

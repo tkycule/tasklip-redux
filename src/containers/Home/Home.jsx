@@ -4,7 +4,7 @@ import { bindActionCreators } from "redux";
 
 import * as actions from "actions";
 
-import { Tabs, Tab } from "material-ui/Tabs";
+import { Tabs, Tab } from "react-bootstrap";
 
 import Login from "components/Login/Login";
 import Register from "components/Register/Register";
@@ -16,11 +16,11 @@ export class Home extends React.Component {
 
   render() {
     return (
-      <Tabs>
-        <Tab label="Login">
+      <Tabs defaultActiveKey={1} id="home-tabs">
+        <Tab title="Login" eventKey={1}>
           <Login login={this.props.login} />
         </Tab>
-        <Tab label="Register">
+        <Tab title="Register" eventKey={2}>
           <Register register={this.props.register} />
         </Tab>
       </Tabs>

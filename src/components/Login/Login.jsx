@@ -1,9 +1,8 @@
 import React from "react";
 
-import { Card, CardText, CardActions } from "material-ui/Card";
-import RaisedButton from "material-ui/RaisedButton";
-import Formsy from "formsy-react";
-import { FormsyText } from "formsy-material-ui/lib";
+import { Button, Panel } from "react-bootstrap";
+import { Input } from "formsy-react-components";
+import Form from "formsy-react-components/release/form";
 
 let errorMessages = {
   isEmail: "invalid format",
@@ -46,36 +45,38 @@ export default class Login extends React.Component {
 
   render() {
     return (
-      <Formsy.Form onValid={::this.enableButton} onInvalid={::this.disableButton} onSubmit={::this.onSubmit}>
-        <Card>
-          <CardText>
-            <FormsyText
-              name="email"
-              floatingLabelText="Email"
-              validations="isEmail"
-              validationErrors={errorMessages}
-              fullWidth={true}
-              defaultValue="test@example.com"
-              required/>
-            <FormsyText
-              type="password"
-              name="password"
-              floatingLabelText="Password"
-              validations="minLength:8,maxLength:64"
-              validationErrors={errorMessages}
-              fullWidth={true}
-              defaultValue="password"
-              required/>
-          </CardText>
-          <CardActions>
-            <RaisedButton
-              type="submit"
-              label="Login"
-              primary={true}
-              disabled={!this.state.canSubmit} />
-          </CardActions>
-        </Card>
-      </Formsy.Form>
+      <Panel>
+        <Form
+          layout="vertical"
+          onValid={::this.enableButton}
+          onInvalid={::this.disableButton}
+          onSubmit={::this.onSubmit}>
+          <Input
+            name="email"
+            label="Email"
+            value=""
+            validations="isEmail"
+            validationErrors={errorMessages}
+            fullWidth={true}
+            required/>
+          <Input
+            type="password"
+            name="password"
+            label="Password"
+            value=""
+            validations="minLength:8,maxLength:64"
+            validationErrors={errorMessages}
+            fullWidth={true}
+            required/>
+          <Button
+            bsStyle="primary"
+            block
+            type="submit"
+            disabled={!this.state.canSubmit}>
+            Login
+          </Button>
+        </Form>
+      </Panel>
       );
   }
 }
