@@ -24,6 +24,7 @@ import Lists from "containers/Lists/Lists";
 import List from "containers/Lists/List";
 import EditTask from "containers/EditTask/EditTask";
 import ConfigLists from "containers/ConfigLists/ConfigLists";
+import Calendar from "containers/Calendar/Calendar";
 import User from "models/User";
 
 import rootSaga from "sagas/sagas";
@@ -32,8 +33,12 @@ import * as reducers from "reducers";
 import moment from "moment";
 moment.locale("ja");
 
+BigCalendar.momentLocalizer(moment);
+import BigCalendar from "react-big-calendar";
+
 import "bootstrap/dist/css/bootstrap.css";
 import "react-datetime/css/react-datetime.css";
+import "fullcalendar/dist/fullcalendar.css";
 
 const rootReducer = combineReducers({
   ...reducers,
@@ -73,7 +78,8 @@ ReactDOM.render(
         <Route path="/" component={App}>
           <IndexRoute component={Home} onEnter={guestOnly} />
           <Route path="lists" component={Lists} onEnter={userOnly}>
-            <Route path="_config_" component={ConfigLists} />
+            <Route path="config" component={ConfigLists} />
+            <Route path="calendar" component={Calendar} />
             <Route path=":listId/tasks" component={List} />
             <Route path=":listId/tasks/:taskId/edit" component={EditTask} />
           </Route>

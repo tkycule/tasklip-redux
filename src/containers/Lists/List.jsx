@@ -5,7 +5,7 @@ import ImmutablePropTypes from "react-immutable-proptypes";
 import ReactCSSTransitionGroup from "react/lib/ReactCSSTransitionGroup";
 import { withRouter } from "react-router";
 
-import { Button, Panel, ListGroup, ListGroupItem } from "react-bootstrap";
+import { Button, ListGroup } from "react-bootstrap";
 import { Input } from "formsy-react-components";
 import Form from "formsy-react-components/release/form";
 
@@ -72,7 +72,6 @@ export class List extends React.Component {
             name="title"
             type="text"
             value=""
-            fullWidth={true}
             required
             placeholder="New Task"
             autoComplete="off"

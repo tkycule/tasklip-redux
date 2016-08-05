@@ -25,11 +25,11 @@ export default class Task extends TaskRecord {
   }
 
   static fetchAll(options) {
-    let params = {
-      show_done: options.showDone || false
-    };
+    let listId = options.listId;
+    delete options.listId;
+
     return request
-      .get(`/lists/${options.listId}/tasks`, params)
+      .get(listId ? `/lists/${listId}/tasks` : "/tasks", options)
       .then((res) => new List(res.body.map((attributes) => new Task(attributes))));
   }
 
@@ -59,6 +59,24 @@ export default class Task extends TaskRecord {
 
   get formattedEndedAt() {
     return this.ended_at ? moment(this.ended_at).format("LLLL") : "";
+  }
+
+  get start() {
+    if (this.started_at) {
+      return this.started_at;
+    } else if (this.alarmed_at) {
+      return this.alarmed_at;
+    }
+    return null;
+  }
+
+  get end() {
+    if (this.started_at) {
+      return this.ended_at;
+    } else if (this.alarmed_at) {
+      return moment(this.alarmed_at).add(1, "hour").format();
+    }
+    return null;
   }
 
 }

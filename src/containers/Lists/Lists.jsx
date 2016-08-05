@@ -18,14 +18,12 @@ export class Lists extends React.Component {
     this.props.actions.fetchLists();
   }
 
-  onSelectList(index) {
-    if (index != -1) {
-      this.props.router.push(`/lists/${index}` + (index != "_config_" ? "/tasks" : ""));
-    }
+  onSelectList(eventKey) {
+    this.props.router.push(eventKey);
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.location.pathname.indexOf("config") == -1 && nextProps.params.listId == undefined && nextProps.lists.size > 0) {
+    if (nextProps.location.pathname.endsWith("/lists")) {
       let list = nextProps.lists.find((list) => list.id == this.props.params.list) || nextProps.lists.get(0);
       this.props.router.push(`/lists/${list.id}/tasks`);
     }
@@ -35,7 +33,7 @@ export class Lists extends React.Component {
     let lists;
 
     if (!this.props.lists.isEmpty()) {
-      lists = this.props.lists.map((list) => <NavItem key={list.id} eventKey={String(list.id)}>
+      lists = this.props.lists.map((list) => <NavItem key={list.id} eventKey={`/lists/${list.id}/tasks`} href={`/lists/${list.id}/tasks`}>
                                                {list.name} [
                                                {list.tasks_count}]
                                              </NavItem>);
@@ -50,11 +48,14 @@ export class Lists extends React.Component {
         <Nav
           bsStyle="pills"
           onSelect={::this.onSelectList}
-          activeKey={this.props.params.listId || "_config_"}
+          activeHref={this.props.location.pathname}
           style={{ marginBottom: "10px", border: "1px solid #ccc", borderRadius: "4px" }}>
           {lists}
-          <NavItem eventKey="_config_">
+          <NavItem eventKey="/lists/config" href="/lists/config">
             <i className="fa fa-list" />
+          </NavItem>
+          <NavItem eventKey="/lists/calendar" href="/lists/calendar">
+            <i className="fa fa-calendar" />
           </NavItem>
         </Nav>
         {this.props.children}

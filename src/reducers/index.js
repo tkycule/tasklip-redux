@@ -49,6 +49,14 @@ export function task(state = null, action) {
   return state;
 }
 
+export function calenderEvents(state = null, action) {
+  switch (action.type) {
+    case actions.FETCH_CALENDAR_EVENTS_SUCCESS:
+      return action.payload;
+  }
+  return state;
+}
+
 const notificationIntialState = {
   message: null
 };

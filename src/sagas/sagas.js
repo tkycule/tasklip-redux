@@ -68,6 +68,15 @@ function* fetchTasks(action) {
   }
 }
 
+function* fetchCalendarEvents(action) {
+  try {
+    let tasks = yield call(Task.fetchAll, action.payload);
+    yield put(actions.fetchCalendarEventsSuccess(tasks));
+  } catch (e) {
+    yield put(actions.fetchCalendarEventsFailure(e));
+  }
+}
+
 function* addTask(action) {
   try {
     let task = yield call(action.payload.task.save.bind(action.payload.task));
@@ -161,6 +170,7 @@ export default function* rootSaga() {
   yield fork(takeEvery, actions.FETCH_LISTS, fetchLists);
   yield fork(takeEvery, actions.FETCH_TASK, fetchTask);
   yield fork(takeEvery, actions.FETCH_TASKS, fetchTasks);
+  yield fork(takeEvery, actions.FETCH_CALENDAR_EVENTS, fetchCalendarEvents);
   yield fork(takeEvery, actions.ADD_TASK, addTask);
   yield fork(takeEvery, actions.UPDATE_TASK, updateTask);
   yield fork(takeEvery, actions.DESTROY_TASK, destroyTask);

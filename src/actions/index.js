@@ -9,6 +9,7 @@ createSuite("clearNotification", true);
 createSuite("fetchLists");
 createSuite("fetchTask");
 createSuite("fetchTasks");
+createSuite("fetchCalendarEvents");
 createSuite("addTask");
 createSuite("updateTask");
 createSuite("destroyTask");
