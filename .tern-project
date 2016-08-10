@@ -1,0 +1,11 @@
+{
+  "libs": [
+    "browser",
+    "jquery",
+    "chai",
+    "ecma6"
+  ],
+  "plugins": [
+    "node": {}
+  ]
+}
