@@ -30,20 +30,15 @@ export class Calendar extends React.Component {
           titleFormat: "YYYY年MM月"
         }
       },
-      viewRender: (view) => {
+      events: (start, end, timezone, callback) => {
         this.props.actions.fetchCalendarEvents({
-          start: view.start.format(),
-          end: view.end.format()
+          start: start.format(),
+          end: end.format(),
+          callback: callback
         });
       }
     });
   }
-
-  componentWillReceiveProps(nextProps) {
-    console.log(nextProps.calenderEvents.toJS());
-    $(".full-calender").fullCalendar("updateEvent", nextProps.calenderEvents.toJS());
-  }
-
 
   render() {
     return <div className="full-calendar" />;

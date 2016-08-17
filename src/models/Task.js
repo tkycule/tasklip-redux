@@ -79,4 +79,11 @@ export default class Task extends TaskRecord {
     return null;
   }
 
+  toCalendarEvent() {
+    let event = this.toJSON();
+    event.start = this.start;
+    event.end = this.end;
+    return event;
+  }
+
 }

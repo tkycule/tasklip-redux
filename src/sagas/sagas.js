@@ -71,6 +71,7 @@ function* fetchTasks(action) {
 function* fetchCalendarEvents(action) {
   try {
     let tasks = yield call(Task.fetchAll, action.payload);
+    action.payload.callback.call(null, tasks.map((task) => task.toCalendarEvent()).toArray());
     yield put(actions.fetchCalendarEventsSuccess(tasks));
   } catch (e) {
     yield put(actions.fetchCalendarEventsFailure(e));
