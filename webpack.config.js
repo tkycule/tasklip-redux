@@ -45,6 +45,8 @@ let config = getConfig({
   }
 });
 
+config.output.publicPath = envVariables.ROOT_URL;
+
 const defines = Object.keys(envVariables)
   .reduce((memo, key) => {
     const val = JSON.stringify(envVariables[key]);
@@ -121,9 +123,6 @@ config.resolve.alias = {
   utils: join(src, "utils")
 };
 // end Roots
-
-config.externals = {
-};
 
 // Testing
 if (isTest) {

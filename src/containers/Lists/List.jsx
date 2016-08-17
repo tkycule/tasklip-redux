@@ -2,7 +2,6 @@ import React from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import ImmutablePropTypes from "react-immutable-proptypes";
-import ReactCSSTransitionGroup from "react/lib/ReactCSSTransitionGroup";
 import { withRouter } from "react-router";
 
 import { Button, ListGroup } from "react-bootstrap";
@@ -80,14 +79,12 @@ export class List extends React.Component {
                          </Button>} />
         </Form>
         <ListGroup>
-          <ReactCSSTransitionGroup transitionName="list" transitionEnterTimeout={500} transitionLeaveTimeout={500}>
-            {this.props.tasks.map((task) => <TaskItem
-                                              task={task}
-                                              updateTask={this.props.actions.updateTask}
-                                              destroyTask={this.props.actions.destroyTask}
-                                              router={this.props.router}
-                                              key={task.id} />)}
-          </ReactCSSTransitionGroup>
+          {this.props.tasks.map((task) => <TaskItem
+                                            task={task}
+                                            updateTask={this.props.actions.updateTask}
+                                            destroyTask={this.props.actions.destroyTask}
+                                            router={this.props.router}
+                                            key={task.id} />)}
         </ListGroup>
         <Button block onClick={this.onDoneClick.bind(this)}>
           {this.state.showDone ? "完了済みは表示しない" : "完了済みも表示する"}

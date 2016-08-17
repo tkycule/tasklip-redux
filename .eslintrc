@@ -33,6 +33,7 @@
 		__API_URL__: true,
 		__ROOT_URL__: true,
 		__APP_NAME__: true,
+		__NODE_ENV__: true,
 		_: true
 	}
 }

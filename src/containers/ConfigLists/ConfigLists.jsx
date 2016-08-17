@@ -1,7 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import ReactCSSTransitionGroup from "react/lib/ReactCSSTransitionGroup";
 
 import { Button, ListGroup } from "react-bootstrap";
 import Form from "formsy-react-components/release/form";
@@ -39,13 +38,11 @@ export class ConfigLists extends React.Component {
                          </Button>} />
         </Form>
         <ListGroup>
-          <ReactCSSTransitionGroup transitionName="list" transitionEnterTimeout={500} transitionLeaveTimeout={500}>
-            {this.props.lists.map((list) => <ListItem
-                                              list={list}
-                                              key={list.id}
-                                              destroyList={this.props.actions.destroyList}
-                                              updateList={this.props.actions.updateList} />)}
-          </ReactCSSTransitionGroup>
+          {this.props.lists.map((list) => <ListItem
+                                            list={list}
+                                            key={list.id}
+                                            destroyList={this.props.actions.destroyList}
+                                            updateList={this.props.actions.updateList} />)}
         </ListGroup>
       </div>
       );

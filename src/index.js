@@ -15,7 +15,8 @@ import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 
 require("react-tap-event-plugin")();
 
-import { Router, Route, IndexRoute, browserHistory } from "react-router";
+import { createHistory, userBasename } from "history"
+import { Router, Route, IndexRoute, hashHistory } from "react-router";
 import { routerReducer, routerMiddleware, syncHistoryWithStore } from "react-router-redux";
 
 import App from "containers/App/App";
@@ -50,7 +51,7 @@ const sagaMiddleware = createSagaMiddleware();
 const store = createStore(
   rootReducer,
   compose(
-    applyMiddleware(routerMiddleware(browserHistory), sagaMiddleware),
+    applyMiddleware(routerMiddleware(hashHistory), sagaMiddleware),
     window.devToolsExtension ? window.devToolsExtension() : f => f
   )
 );
@@ -69,7 +70,7 @@ function userOnly(nextState, replace) {
   }
 }
 
-const history = syncHistoryWithStore(browserHistory, store);
+const history = syncHistoryWithStore(hashHistory, store);
 
 ReactDOM.render(
   <Provider store={store}>
