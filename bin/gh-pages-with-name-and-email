@@ -1,0 +1,14 @@
+#!/usr/bin/env node
+
+const parseGitConfig = require("parse-git-config");
+const ghpages = require("gh-pages");
+const path = require("path");
+
+const gitConfig = parseGitConfig.sync();
+
+ghpages.publish(path.join(__dirname, "dist"), {
+  user: {
+    name: gitConfig.user,
+    email: gitConfig.email
+  }
+});
