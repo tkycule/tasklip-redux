@@ -16,6 +16,8 @@ const TaskRecord = Record({
   updated_at: null
 });
 
+const dateFormat = "YY/MM/DD(ddd) HH:mm";
+
 export default class Task extends TaskRecord {
 
   static fetch(id) {
@@ -50,15 +52,15 @@ export default class Task extends TaskRecord {
   }
 
   get formattedAlarmedAt() {
-    return this.alarmed_at ? moment(this.alarmed_at).format("LLLL") : "";
+    return this.alarmed_at ? moment(this.alarmed_at).format(dateFormat) : "";
   }
 
   get formattedStartedAt() {
-    return this.started_at ? moment(this.started_at).format("LLLL") : "";
+    return this.started_at ? moment(this.started_at).format(dateFormat) : "";
   }
 
   get formattedEndedAt() {
-    return this.ended_at ? moment(this.ended_at).format("LLLL") : "";
+    return this.ended_at ? moment(this.ended_at).format(dateFormat) : "";
   }
 
   get start() {

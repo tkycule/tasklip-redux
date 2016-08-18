@@ -29,7 +29,7 @@ export default class App extends React.Component {
     if (this.props.currentUser) {
 
       rightToolbar = <Nav pullRight>
-                       <Navbar.Text>
+                       <Navbar.Text style={{ paddingLeft: "15px" }}>
                          {this.props.currentUser.email}
                        </Navbar.Text>
                        <NavItem onClick={::this.onClickLogout}>
@@ -44,8 +44,11 @@ export default class App extends React.Component {
             <Navbar.Brand>
               TasklipRedux
             </Navbar.Brand>
+            <Navbar.Toggle />
           </Navbar.Header>
-          {rightToolbar}
+          <Navbar.Collapse>
+            {rightToolbar}
+          </Navbar.Collapse>
         </Navbar>
         <Grid fluid={true}>
           <Notification notification={this.props.notification} clearNotification={this.props.actions.clearNotification} />

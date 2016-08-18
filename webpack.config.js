@@ -124,6 +124,16 @@ config.resolve.alias = {
 };
 // end Roots
 
+//
+// Modernizr
+//
+config.module.loaders.push({
+  test: /\.modernizrrc$/,
+  loader: "modernizr"
+});
+
+config.resolve.alias["modernizr$"] = path.resolve(__dirname, "./.modernizrrc");
+
 // Testing
 if (isTest) {
   Object.assign(config.externals, {

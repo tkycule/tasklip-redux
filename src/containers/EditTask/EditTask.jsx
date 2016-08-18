@@ -7,7 +7,8 @@ import { withRouter } from "react-router";
 import { Button, Well, FormGroup, ControlLabel, InputGroup } from "react-bootstrap";
 import Form from "formsy-react-components/release/form";
 import { Input, Checkbox, Textarea, Select } from "formsy-react-components";
-import DateTime from "react-datetime";
+import Modenizr from "modernizr";
+import moment from "moment";
 
 import * as actions from "actions";
 
@@ -56,10 +57,6 @@ export class EditTask extends React.Component {
   }
 
   onSubmit(data) {
-    data.alarmed_at = this.state.alarmedAt;
-    data.started_at = this.state.startedAt;
-    data.ended_at = this.state.endedAt;
-
     let task = this.props.task.merge(data);
     this.props.actions.updateTask({
       task: task,
@@ -86,6 +83,19 @@ export class EditTask extends React.Component {
     this.setState({
       [attr]: null
     });
+  }
+
+  _renderDateTime(attrs) {
+    if (true || Modenizr.inputtypes["datetime-local"]) {
+      return <Input
+               name={attrs.name}
+               label={attrs.label}
+               type="datetime-local"
+               value={attrs.value ? moment(attrs.value).format("YYYY-MM-DDTHH:mm") : ""}
+               layout={attrs.layout} />;
+    } else {
+      //TODO
+    }
   }
 
   render() {
@@ -133,39 +143,29 @@ export class EditTask extends React.Component {
                  name="done"
                  checked={this.props.task.done || false}
                  label="DONE" />
-               <FormGroup>
-                 <ControlLabel>
-                   Alarm
-                 </ControlLabel>
-                 <InputGroup>
-                   <DateTime value={this.state.alarmedAt} onChange={(moment) => this.onDateTimeChange(moment, "alarmedAt")} />
-                   <InputGroup.Button>
-                     <Button onClick={this.onClickClearDateTime.bind(this, "alarmedAt")}>
-                       <i className="fa fa-minus-circle"></i>
-                     </Button>
-                   </InputGroup.Button>
-                 </InputGroup>
-               </FormGroup>
+               {this._renderDateTime({
+                  name: "alarmed_at",
+                  label: "Alarm",
+                  value: this.props.task.alarmed_at
+                })}
                <FormGroup>
                  <ControlLabel>
                    期間
                  </ControlLabel>
                  <InputGroup>
-                   <DateTime value={this.state.startedAt} onChange={(moment) => this.onDateTimeChange(moment, "startedAt")} />
-                   <InputGroup.Button>
-                     <Button onClick={this.onClickClearDateTime.bind(this, "startedAt")}>
-                       <i className="fa fa-minus-circle"></i>
-                     </Button>
-                   </InputGroup.Button>
+                   {this._renderDateTime({
+                      name: "started_at",
+                      value: this.props.task.started_at,
+                      layout: "elementOnly"
+                    })}
                    <InputGroup.Addon>
                      〜
                    </InputGroup.Addon>
-                   <DateTime value={this.state.endedAt} onChange={(moment) => this.onDateTimeChange(moment, "endedAt")} />
-                   <InputGroup.Button>
-                     <Button onClick={this.onClickClearDateTime.bind(this, "endedAt")}>
-                       <i className="fa fa-minus-circle"></i>
-                     </Button>
-                   </InputGroup.Button>
+                   {this._renderDateTime({
+                      name: "ended_at",
+                      value: this.props.task.ended_at,
+                      layout: "elementOnly"
+                    })}
                  </InputGroup>
                </FormGroup>
                <Button
