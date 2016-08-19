@@ -45,8 +45,11 @@ export class EditTask extends React.Component {
   }
 
   enableButton() {
+    // 期間が正しいかチェック
+    let started_at = this.refs.started_at.element.value;
+    let ended_at = this.refs.ended_at.element.value;
     this.setState({
-      canSubmit: true
+      canSubmit: (!!started_at && !!ended_at && (moment(started_at).unix() < moment(ended_at).unix())) || (!started_at && !ended_at)
     });
   }
 
@@ -73,26 +76,37 @@ export class EditTask extends React.Component {
     this.props.router.push(`/lists/${this.props.task.list_id}/tasks`);
   }
 
-  onDateTimeChange(moment, attr) {
-    this.setState({
-      [attr]: moment.toDate()
-    });
-  }
+  onDateTimeChange(name, value) {
+    if (!value) {
+      return;
+    }
 
-  onClickClearDateTime(attr) {
-    this.setState({
-      [attr]: null
-    });
+    // もう片方が空欄なら同じ値を入れる
+    if (name == "started_at" && !this.refs.ended_at.element.value) {
+      this.refs.ended_at.changeValue({
+        currentTarget: {
+          value: moment(value).add(1, "hours").format("YYYY-MM-DDTHH:mm")
+        }
+      });
+    } else if (name == "ended_at" && !this.refs.started_at.element.value) {
+      this.refs.started_at.changeValue({
+        currentTarget: {
+          value: moment(value).subtract(1, "hours").format("YYYY-MM-DDTHH:mm")
+        }
+      });
+    }
   }
 
   _renderDateTime(attrs) {
     if (true || Modenizr.inputtypes["datetime-local"]) {
       return <Input
                name={attrs.name}
+               ref={attrs.name}
                label={attrs.label}
                type="datetime-local"
                value={attrs.value ? moment(attrs.value).format("YYYY-MM-DDTHH:mm") : ""}
-               layout={attrs.layout} />;
+               layout={attrs.layout}
+               onChange={::this.onDateTimeChange} />;
     } else {
       //TODO
     }
