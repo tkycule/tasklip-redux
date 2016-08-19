@@ -3,12 +3,7 @@ import React from "react";
 import { Button, Panel } from "react-bootstrap";
 import { Input } from "formsy-react-components";
 import Form from "formsy-react-components/release/form";
-
-let errorMessages = {
-  isEmail: "invalid format",
-  minLength: "greater than 8",
-  maxLength: "less than 64"
-};
+import { errorMessages } from "utils";
 
 export default class Login extends React.Component {
 
@@ -56,7 +51,7 @@ export default class Login extends React.Component {
             label="Email"
             value=""
             validations="isEmail"
-            validationErrors={errorMessages}
+            validationErrors={errorMessages()}
             fullWidth={true}
             required/>
           <Input
@@ -65,7 +60,10 @@ export default class Login extends React.Component {
             label="Password"
             value=""
             validations="minLength:8,maxLength:64"
-            validationErrors={errorMessages}
+            validationErrors={errorMessages({
+                                minLength: 8,
+                                maxLength: 64
+                              })}
             fullWidth={true}
             required/>
           <Button

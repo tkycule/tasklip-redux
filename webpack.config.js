@@ -134,6 +134,8 @@ config.module.loaders.push({
 
 config.resolve.alias["modernizr$"] = path.resolve(__dirname, "./.modernizrrc");
 
+config.externals = {};
+
 // Testing
 if (isTest) {
   Object.assign(config.externals, {
