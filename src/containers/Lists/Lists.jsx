@@ -4,7 +4,7 @@ import { bindActionCreators } from "redux";
 import ImmutablePropTypes from "react-immutable-proptypes";
 import { withRouter } from "react-router";
 
-import { Nav, NavItem, Panel } from "react-bootstrap";
+import { Nav, NavItem } from "react-bootstrap";
 
 import * as actions from "actions";
 

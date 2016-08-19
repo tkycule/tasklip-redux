@@ -3,19 +3,21 @@ import { expect } from "chai";
 import { shallow } from "enzyme";
 import sinon from "sinon";
 
-import Login from "./Login";
+import Register from "./Register";
 
-describe("<Login />", () => {
+describe("<Register />", () => {
 
   let wrapper;
   let email;
   let password;
-  let login;
+  let passwordConfirmation;
+  let register;
   beforeEach(() => {
-    login = sinon.spy();
-    wrapper = shallow(<Login login={login} />);
+    register = sinon.spy();
+    wrapper = shallow(<Register register={register} />);
     email = wrapper.find("Input[name='email']");
     password = wrapper.find("Input[name='password']");
+    passwordConfirmation = wrapper.find("Input[name='password_confirmation']");
   });
 
   it("should render correctly", () => {
@@ -32,16 +34,18 @@ describe("<Login />", () => {
       expect(email.prop("required")).to.be.true;
       expect(password.prop("validations")).to.equal("minLength:8,maxLength:64");
       expect(password.prop("required")).to.be.true;
+      expect(passwordConfirmation.prop("validations")).to.equal("equalsField:password");
+      expect(passwordConfirmation.prop("required")).to.be.true;
     });
   });
 
   describe("onSubmit", () => {
-    it("invokes login", () => {
+    it("invokes register", () => {
       wrapper.find("form").simulate("submit", {
         email: "test@example.com",
         password: "password"
       });
-      expect(login.calledWith({
+      expect(register.calledWith({
         email: "test@example.com",
         password: "password"
       })).to.be.true;
