@@ -16,10 +16,11 @@
   },
 
   "plugins": [
-    "react"
+    "react",
+    "jsx-a11y"
   ],
 
-  "extends": "eslint:recommended",
+  "extends": ["eslint:recommended", "plugin:react/recommended"],
 
   "rules": {
     "semi": 2,
