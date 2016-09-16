@@ -6,7 +6,6 @@ import sinon from "sinon";
 import Register from "./Register";
 
 describe("<Register />", () => {
-
   let wrapper;
   let email;
   let password;
@@ -28,14 +27,13 @@ describe("<Register />", () => {
   });
 
   describe("validations", () => {
-
     it("should be correctly", () => {
       expect(email.prop("validations")).to.equal("isEmail");
-      expect(email.prop("required")).to.be.true;
+      expect(email.prop("required")).to.be.true();
       expect(password.prop("validations")).to.equal("minLength:8,maxLength:64");
-      expect(password.prop("required")).to.be.true;
+      expect(password.prop("required")).to.be.true();
       expect(passwordConfirmation.prop("validations")).to.equal("equalsField:password");
-      expect(passwordConfirmation.prop("required")).to.be.true;
+      expect(passwordConfirmation.prop("required")).to.be.true();
     });
   });
 
@@ -43,12 +41,12 @@ describe("<Register />", () => {
     it("invokes register", () => {
       wrapper.find("form").simulate("submit", {
         email: "test@example.com",
-        password: "password"
+        password: "password",
       });
       expect(register.calledWith({
         email: "test@example.com",
-        password: "password"
-      })).to.be.true;
+        password: "password",
+      })).to.be.true();
     });
   });
 });

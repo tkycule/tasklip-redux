@@ -1,18 +1,16 @@
 import { expect } from "chai";
 import sinon from "sinon";
-
-let mock = require("superagent-mocker")(require("superagent"));
-
 import User, { CURRENT_USER_KEY } from "./User";
 
-describe("Model User", () => {
+const mock = require("superagent-mocker")(require("superagent"));
 
+describe("Model User", () => {
   let model;
   beforeEach(() => {
     model = new User();
   });
 
-  let columns = ["email", "password", "authentication_token"];
+  const columns = ["email", "password", "authentication_token"];
   columns.forEach((column) => {
     it(`should set ${column}`, () => {
       expect(model.set(column, "some value")).to.have.property(column, "some value");
@@ -20,17 +18,15 @@ describe("Model User", () => {
   });
 
   describe(".login", () => {
-    let url = `${__API_URL__}/sessions`;
+    const url = `${__API_URL__}/sessions`;
 
     context("with valid parameter", () => {
       beforeEach(() => {
-        mock.post(url, () => {
-          return {
-            body: {
-              email: "test@example.com"
-            }
-          };
-        });
+        mock.post(url, () => ({
+          body: {
+            email: "test@example.com",
+          },
+        }));
         sinon.spy(User, "setCurrentUser");
       });
 
@@ -39,7 +35,7 @@ describe("Model User", () => {
           .login("test@example.com", "password")
           .then((user) => {
             expect(user.email).to.equal("test@example.com");
-            expect(User.setCurrentUser.calledOnce).to.be.true;
+            expect(User.setCurrentUser.calledOnce).to.be.true();
           })
           .then(done).catch(done);
       });
@@ -47,11 +43,9 @@ describe("Model User", () => {
 
     context("with invalid parameter", () => {
       beforeEach(() => {
-        mock.post(url, () => {
-          return {
-            status: 401
-          };
-        });
+        mock.post(url, () => ({
+          status: 401,
+        }));
       });
 
       it("returns 401", (done) => {
@@ -72,11 +66,11 @@ describe("Model User", () => {
     });
 
     it("should set localStorage", () => {
-      let user = new User({
-        email: "test@example.com"
+      const user = new User({
+        email: "test@example.com",
       });
 
-      expect(localStorage[CURRENT_USER_KEY]).to.be.notOk;
+      expect(localStorage[CURRENT_USER_KEY]).to.be.notOk();
       User.setCurrentUser(user);
       expect(localStorage[CURRENT_USER_KEY]).to.deep.equal(JSON.stringify(user.toJSON()));
     });
@@ -88,11 +82,11 @@ describe("Model User", () => {
     });
 
     it("should return user", () => {
-      let user = new User({
-        email: "test@example.com"
+      const user = new User({
+        email: "test@example.com",
       });
 
-      expect(User.getCurrentUser()).to.be.null;
+      expect(User.getCurrentUser()).to.be.null();
       localStorage[CURRENT_USER_KEY] = JSON.stringify(user.toJSON());
       expect(User.getCurrentUser()).to.equal(user);
     });
@@ -104,13 +98,13 @@ describe("Model User", () => {
     });
 
     it("should clear localStorage", () => {
-      let user = new User({
-        email: "test@example.com"
+      const user = new User({
+        email: "test@example.com",
       });
 
       localStorage[CURRENT_USER_KEY] = JSON.stringify(user.toJSON());
       user.logout();
-      expect(localStorage[CURRENT_USER_KEY]).to.be.undefined;
+      expect(localStorage[CURRENT_USER_KEY]).to.be.undefined();
     });
   });
 });

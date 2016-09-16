@@ -76,7 +76,7 @@ export function notification(state = notificationIntialState, action) {
   }
 
   if (action.error) {
-    console.error(action.payload);
+    console.error(action.payload); /* eslint no-console:0 */
     return {
       message: action.payload.response.text,
       type: "danger",

@@ -6,7 +6,7 @@ describe("utils/errorMessages", () => {
   it("should return error messages", () => {
     const messages = errorMessages({
       minLength: 8,
-      maxLength: 64
+      maxLength: 64,
     });
 
     expect(messages.isDefaultRequiredValue).to.equal("入力してください");

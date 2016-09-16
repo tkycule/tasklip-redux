@@ -1,17 +1,16 @@
 import { expect } from "chai";
-let mock = require("superagent-mocker")(require("superagent"));
 import { List } from "immutable";
-
 import Task from "./Task";
 
-describe("Model Task", () => {
+const mock = require("superagent-mocker")(require("superagent"));
 
+describe("Model Task", () => {
   let model;
   beforeEach(() => {
-    model = new Task;
+    model = new Task();
   });
 
-  let columns = ["id", "list_id", "title", "memo", "done", "alarmed_at", "started_at", "ended_at", "created_at", "updated_at"];
+  const columns = ["id", "list_id", "title", "memo", "done", "alarmed_at", "started_at", "ended_at", "created_at", "updated_at"];
   columns.forEach((column) => {
     it(`should set ${column}`, () => {
       expect(model.set(column, "some value")).to.have.property(column, "some value");
@@ -19,7 +18,6 @@ describe("Model Task", () => {
   });
 
   describe(".fetchAll", () => {
-
     let fixtures;
 
     beforeEach(() => {
@@ -27,25 +25,23 @@ describe("Model Task", () => {
         {
           id: 1,
           list_id: 1,
-          title: "Task.1"
+          title: "Task.1",
         },
         {
           id: 2,
           list_id: 1,
-          name: "Task.2"
-        }
+          name: "Task.2",
+        },
       ];
-      mock.get(`${__API_URL__}/lists/1/tasks`, () => {
-        return {
-          body: fixtures
-        };
-      });
+      mock.get(`${__API_URL__}/lists/1/tasks`, () => ({
+        body: fixtures,
+      }));
     });
 
     it("returns lists", (done) => {
       Task
         .fetchAll({
-          listId: 1
+          listId: 1,
         })
         .then((lists) => {
           expect(lists).to.be.instanceOf(List);
@@ -55,7 +51,5 @@ describe("Model Task", () => {
         })
         .then(done).catch(done);
     });
-
-
   });
 });

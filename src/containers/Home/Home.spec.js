@@ -7,7 +7,6 @@ import { Tabs, Tab } from "react-bootstrap";
 import { Home } from "./Home";
 
 describe("<Home />", () => {
-
   let wrapper;
   beforeEach(() => {
     wrapper = shallow(<Home />);
