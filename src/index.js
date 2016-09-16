@@ -10,9 +10,6 @@ import createSagaMiddleware from "redux-saga";
 import "font-awesome/css/font-awesome.css";
 import "styles/application.sass";
 
-import getMuiTheme from "material-ui/styles/getMuiTheme";
-import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
-
 import { Router, Route, IndexRoute, hashHistory } from "react-router";
 import { routerReducer, routerMiddleware, syncHistoryWithStore } from "react-router-redux";
 
@@ -71,19 +68,17 @@ const history = syncHistoryWithStore(hashHistory, store);
 
 ReactDOM.render(
   <Provider store={store}>
-    <MuiThemeProvider muiTheme={getMuiTheme()}>
-      <Router history={history}>
-        <Route path="/" component={App}>
-          <IndexRoute component={Home} onEnter={guestOnly} />
-          <Route path="lists" component={Lists} onEnter={userOnly}>
-            <Route path="config" component={ConfigLists} />
-            <Route path="calendar" component={Calendar} />
-            <Route path=":listId/tasks" component={List} />
-            <Route path=":listId/tasks/:taskId/edit" component={EditTask} />
-          </Route>
+    <Router history={history}>
+      <Route path="/" component={App}>
+        <IndexRoute component={Home} onEnter={guestOnly} />
+        <Route path="lists" component={Lists} onEnter={userOnly}>
+          <Route path="config" component={ConfigLists} />
+          <Route path="calendar" component={Calendar} />
+          <Route path=":listId/tasks" component={List} />
+          <Route path=":listId/tasks/:taskId/edit" component={EditTask} />
         </Route>
-      </Router>
-    </MuiThemeProvider>
+      </Route>
+    </Router>
   </Provider>
   , document.querySelector("#root")
 );

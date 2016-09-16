@@ -6,7 +6,7 @@ import { Alert } from "react-bootstrap";
 export default class Notification extends React.Component {
 
   static propTypes = {
-    notification: React.PropTypes.func.isRequired,
+    notification: React.PropTypes.object.isRequired,
     clearNotification: React.PropTypes.func.isRequired,
   }
 

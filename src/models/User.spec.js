@@ -70,7 +70,7 @@ describe("Model User", () => {
         email: "test@example.com",
       });
 
-      expect(localStorage[CURRENT_USER_KEY]).to.be.notOk();
+      expect(localStorage[CURRENT_USER_KEY]).to.be.not.ok();
       User.setCurrentUser(user);
       expect(localStorage[CURRENT_USER_KEY]).to.deep.equal(JSON.stringify(user.toJSON()));
     });

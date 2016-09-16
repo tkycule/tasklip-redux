@@ -24,8 +24,8 @@ export default class App extends React.Component {
   static propTypes = {
     actions: React.PropTypes.objectOf(React.PropTypes.func).isRequired,
     currentUser: ImmutablePropTypes.record,
-    router: React.PropTypes.func.isRequired,
-    notification: React.PropTypes.func.isRequired,
+    router: React.PropTypes.object.isRequired,
+    notification: React.PropTypes.object.isRequired,
     children: React.PropTypes.oneOfType([
       React.PropTypes.arrayOf(React.PropTypes.node),
       React.PropTypes.node,

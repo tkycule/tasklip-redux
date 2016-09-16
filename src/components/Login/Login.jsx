@@ -16,8 +16,8 @@ export default class Login extends React.Component {
     this.state = {
       canSubmit: false,
     };
-    this.onValid = ::this.onValid;
-    this.onInvalid = ::this.onInvalid;
+    this.enableButton = ::this.enableButton;
+    this.disableButton = ::this.disableButton;
     this.onSubmit = ::this.onSubmit;
   }
 

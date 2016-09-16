@@ -15,7 +15,7 @@ export default class Register extends React.Component {
     this.state = {
       canSubmit: false,
     };
-    this.onValid = ::this.onValid;
+    this.enableButton = ::this.enableButton;
     this.disableButton = ::this.disableButton;
     this.onSubmit = ::this.onSubmit;
   }
