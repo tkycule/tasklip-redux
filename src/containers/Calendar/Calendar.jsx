@@ -7,9 +7,19 @@ import * as actions from "actions";
 import $ from "jquery";
 import "fullcalendar";
 
-export class Calendar extends React.Component {
+@connect(
+  state => ({
+    calenderEvents: state.calenderEvents,
+  }),
+
+  dispatch => ({
+    actions: bindActionCreators(actions, dispatch),
+  }),
+)
+export default class Calendar extends React.Component {
 
   static propTypes = {
+    actions: React.PropTypes.objectOf(React.PropTypes.func).isRequired,
   }
 
   componentDidMount() {
@@ -17,26 +27,26 @@ export class Calendar extends React.Component {
       header: {
         left: "prev, next, today",
         center: "title",
-        right: "month, agendaWeek, agendaDay"
+        right: "month, agendaWeek, agendaDay",
       },
       nextDayThreshold: "00:00:00",
       displayEventTime: false,
       slotLabelFormat: "H:mm",
       columnFormat: {
-        agenda: "DD [(]ddd[)]"
+        agenda: "DD [(]ddd[)]",
       },
       views: {
         month: {
-          titleFormat: "YYYY年MM月"
-        }
+          titleFormat: "YYYY年MM月",
+        },
       },
       events: (start, end, timezone, callback) => {
         this.props.actions.fetchCalendarEvents({
           start: start.format(),
           end: end.format(),
-          callback: callback
+          callback,
         });
-      }
+      },
     });
   }
 
@@ -44,20 +54,3 @@ export class Calendar extends React.Component {
     return <div className="full-calendar" />;
   }
 }
-
-function mapStateToProps(state) {
-  return {
-    calenderEvents: state.calenderEvents
-  };
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    actions: bindActionCreators(actions, dispatch)
-  };
-}
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Calendar);

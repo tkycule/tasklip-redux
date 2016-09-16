@@ -13,42 +13,56 @@ import * as actions from "actions";
 import TaskItem from "components/TaskItem/TaskItem";
 import Task from "models/Task";
 
-export class List extends React.Component {
+@withRouter
+@connect(
+  state => ({
+    tasks: state.tasks,
+  }),
+  dispatch => ({
+    actions: bindActionCreators(actions, dispatch),
+  })
+)
+export default class List extends React.Component {
   static propTypes = {
-    tasks: ImmutablePropTypes.list
+    tasks: ImmutablePropTypes.list,
+    actions: React.PropTypes.objectOf(React.PropTypes.func).isRequired,
+    params: React.PropTypes.object.isRequired,
+    router: React.PropTypes.object.isRequired,
   }
 
   constructor(props) {
     super(props);
-
     this.state = {
-      showDone: false
+      showDone: false,
     };
+    this.onSubmit = ::this.onSubmit;
+    this.onDoneClick = ::this.onDoneClick;
   }
 
   componentDidMount() {
     this.props.actions.fetchTasks({
       listId: this.props.params.listId,
-      showDone: this.state.showDone
+      showDone: this.state.showDone,
     });
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.params.listId != nextProps.params.listId) {
+    if (this.props.params.listId !== nextProps.params.listId) {
       this.setState({
-        showDone: false
+        showDone: false,
       });
       this.props.actions.fetchTasks({
-        listId: nextProps.params.listId
+        listId: nextProps.params.listId,
       });
     }
   }
 
   onSubmit(data, resetForm) {
-    data.list_id = this.props.params.listId;
     this.props.actions.addTask({
-      task: new Task(data),
-      onSuccess: resetForm
+      task: new Task(data.merge({
+        list_id: this.props.params.listId,
+      })),
+      onSuccess: resetForm,
     });
     resetForm();
   }
@@ -56,17 +70,17 @@ export class List extends React.Component {
   onDoneClick() {
     this.props.actions.fetchTasks({
       listId: this.props.params.listId,
-      showDone: !this.state.showDone
+      showDone: !this.state.showDone,
     });
     this.setState({
-      showDone: !this.state.showDone
+      showDone: !this.state.showDone,
     });
   }
 
   render() {
     return (
       <div>
-        <Form layout="elementOnly" onSubmit={::this.onSubmit} style={{ marginBottom: "10px" }}>
+        <Form layout="elementOnly" onSubmit={this.onSubmit} style={{ marginBottom: "10px" }}>
           <Input
             name="title"
             type="text"
@@ -79,34 +93,17 @@ export class List extends React.Component {
                          </Button>} />
         </Form>
         <ListGroup>
-          {this.props.tasks.map((task) => <TaskItem
-                                            task={task}
-                                            updateTask={this.props.actions.updateTask}
-                                            destroyTask={this.props.actions.destroyTask}
-                                            router={this.props.router}
-                                            key={task.id} />)}
+          {this.props.tasks.map(task => <TaskItem
+                                          task={task}
+                                          updateTask={this.props.actions.updateTask}
+                                          destroyTask={this.props.actions.destroyTask}
+                                          router={this.props.router}
+                                          key={task.id} />)}
         </ListGroup>
-        <Button block onClick={this.onDoneClick.bind(this)}>
+        <Button block onClick={this.onDoneClick}>
           {this.state.showDone ? "完了済みは表示しない" : "完了済みも表示する"}
         </Button>
       </div>
       );
   }
 }
-
-function mapStateToProps(state) {
-  return {
-    tasks: state.tasks
-  };
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    actions: bindActionCreators(actions, dispatch)
-  };
-}
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(withRouter(List));

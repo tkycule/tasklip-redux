@@ -10,9 +10,31 @@ import { Navbar, Nav, NavItem, Grid } from "react-bootstrap";
 
 import Notification from "components/Notification/Notification";
 
+@withRouter
+@connect(
+  state => ({
+    currentUser: state.currentUser,
+    notification: state.notification,
+  }),
+  dispatch => ({
+    actions: bindActionCreators(actions, dispatch),
+  })
+)
 export default class App extends React.Component {
   static propTypes = {
-    currentUser: ImmutablePropTypes.record
+    actions: React.PropTypes.objectOf(React.PropTypes.func).isRequired,
+    currentUser: ImmutablePropTypes.record,
+    router: React.PropTypes.func.isRequired,
+    notification: React.PropTypes.func.isRequired,
+    children: React.PropTypes.oneOfType([
+      React.PropTypes.arrayOf(React.PropTypes.node),
+      React.PropTypes.node,
+    ]),
+  }
+
+  constructor(props) {
+    super(props);
+    this.onClickLogout = ::this.onClickLogout;
   }
 
   onClickLogout() {
@@ -20,26 +42,28 @@ export default class App extends React.Component {
     this.props.actions.logout();
     this.props.router.push("/");
     this.props.actions.notification({
-      message: "ログアウトしました"
+      message: "ログアウトしました",
     });
   }
 
   render() {
     let rightToolbar;
     if (this.props.currentUser) {
-
-      rightToolbar = <Nav pullRight>
-                       <Navbar.Text style={{ paddingLeft: "15px" }}>
-                         {this.props.currentUser.email}
-                       </Navbar.Text>
-                       <NavItem onClick={::this.onClickLogout}>
-                         Logout
-                       </NavItem>
-                     </Nav>;
+      rightToolbar = (
+        <Nav pullRight>
+          <Navbar.Text style={{ paddingLeft: "15px" }}>
+            {this.props.currentUser.email}
+          </Navbar.Text>
+          <NavItem onClick={this.onClickLogout}>
+            Logout
+          </NavItem>
+        </Nav>
+      );
     }
+
     return (
       <div>
-        <Navbar fluid={true}>
+        <Navbar fluid>
           <Navbar.Header>
             <Navbar.Brand>
               TasklipRedux
@@ -50,7 +74,7 @@ export default class App extends React.Component {
             {rightToolbar}
           </Navbar.Collapse>
         </Navbar>
-        <Grid fluid={true}>
+        <Grid fluid>
           <Notification notification={this.props.notification} clearNotification={this.props.actions.clearNotification} />
           {this.props.children}
         </Grid>
@@ -58,21 +82,3 @@ export default class App extends React.Component {
       );
   }
 }
-
-function mapStateToProps(state) {
-  return {
-    currentUser: state.currentUser,
-    notification: state.notification
-  };
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    actions: bindActionCreators(actions, dispatch)
-  };
-}
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(withRouter(App));

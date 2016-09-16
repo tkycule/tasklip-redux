@@ -9,9 +9,16 @@ import { Tabs, Tab } from "react-bootstrap";
 import Login from "components/Login/Login";
 import Register from "components/Register/Register";
 
-export class Home extends React.Component {
+@connect(
+  () => ({
+  }),
 
+  dispatch => bindActionCreators(actions, dispatch)
+)
+export default class Home extends React.Component {
   static propTypes = {
+    login: React.PropTypes.action.isRequired,
+    register: React.PropTypes.action.isRequired,
   }
 
   render() {
@@ -27,17 +34,3 @@ export class Home extends React.Component {
       );
   }
 }
-
-function mapStateToProps(state) {
-  return {
-  };
-}
-
-function mapDispatchToProps(dispatch) {
-  return bindActionCreators(actions, dispatch);
-}
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Home);

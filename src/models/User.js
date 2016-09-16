@@ -2,10 +2,10 @@ import { Record } from "immutable";
 
 import request from "utils/request";
 
-const UserRecord = Record({
+const UserRecord = new Record({
   email: null,
   password: null,
-  authentication_token: null
+  authentication_token: null,
 });
 
 export const CURRENT_USER_KEY = "tasklip_current_user";
@@ -14,11 +14,11 @@ export default class User extends UserRecord {
   static login(email, password) {
     return request
       .post("/sessions", {
-        email: email,
-        password: password
+        email,
+        password,
       })
-      .then(res => {
-        let user = new User(res.body);
+      .then((res) => {
+        const user = new User(res.body);
         User.setCurrentUser(user);
         return user;
       });
@@ -46,11 +46,11 @@ export default class User extends UserRecord {
   static register(email, password) {
     return request
       .post("/users", {
-        email: email,
-        password: password
+        email,
+        password,
       })
-      .then(res => {
-        let user = new User(res.body);
+      .then((res) => {
+        const user = new User(res.body);
         User.setCurrentUser(user);
         return user;
       });

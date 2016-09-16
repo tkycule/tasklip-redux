@@ -20,14 +20,19 @@
     "jsx-a11y"
   ],
 
-  "extends": ["eslint:recommended", "plugin:react/recommended"],
+  "extends": "airbnb",
 
   "rules": {
-    "semi": 2,
-    "object-curly-spacing": [2, "always"],
-    "no-var": 2,
-    "react/jsx-uses-react": 2,
-    "react/jsx-uses-vars": 2
+		"quotes": [2, "double"],
+		"react/jsx-filename-extension": 0,
+    "react/jsx-indent": 0,
+    "react/jsx-indent-props": 0,
+    "react/jsx-closing-bracket-location": 0,
+    "react/forbid-prop-types": 0,
+    "react/prefer-stateless-function": 0,
+		"class-methods-use-this": 0,
+    "max-len": [2, 140],
+    "indent": 0
   },
 
 	"globals": {
@@ -36,5 +41,9 @@
 		__APP_NAME__: true,
 		__NODE_ENV__: true,
 		_: true
-	}
+	},
+
+  "settings": {
+    "import/resolver": "webpack"
+  }
 }

@@ -6,35 +6,36 @@ import Form from "formsy-react-components/release/form";
 import { errorMessages } from "utils";
 
 export default class Register extends React.Component {
+  static propTypes = {
+    register: React.PropTypes.func.isRequired,
+  }
 
   constructor(props) {
     super(props);
-
     this.state = {
-      canSubmit: false
+      canSubmit: false,
     };
-  }
-
-  static propTypes = {
-    register: React.PropTypes.func.isRequired
-  }
-
-  enableButton() {
-    this.setState({
-      canSubmit: true
-    });
-  }
-
-  disableButton() {
-    this.setState({
-      canSubmit: false
-    });
+    this.onValid = ::this.onValid;
+    this.disableButton = ::this.disableButton;
+    this.onSubmit = ::this.onSubmit;
   }
 
   onSubmit(data) {
     this.props.register({
       email: data.email,
-      password: data.password
+      password: data.password,
+    });
+  }
+
+  enableButton() {
+    this.setState({
+      canSubmit: true,
+    });
+  }
+
+  disableButton() {
+    this.setState({
+      canSubmit: false,
     });
   }
 
@@ -43,9 +44,9 @@ export default class Register extends React.Component {
       <Panel>
         <Form
           layout="vertical"
-          onValid={::this.enableButton}
-          onInvalid={::this.disableButton}
-          onSubmit={::this.onSubmit}>
+          onValid={this.enableButton}
+          onInvalid={this.disableButton}
+          onSubmit={this.onSubmit}>
           <Input
             name="email"
             type="email"
@@ -53,8 +54,8 @@ export default class Register extends React.Component {
             value=""
             validations="isEmail"
             validationErrors={errorMessages()}
-            fullWidth={true}
-            required/>
+            fullWidth
+            required />
           <Input
             type="password"
             name="password"
@@ -63,10 +64,10 @@ export default class Register extends React.Component {
             validations="minLength:8,maxLength:64"
             validationErrors={errorMessages({
                                 minLength: 8,
-                                maxLength: 64
+                                maxLength: 64,
                               })}
-            fullWidth={true}
-            required/>
+            fullWidth
+            required />
           <Input
             type="password"
             name="password_confirmation"
@@ -74,10 +75,10 @@ export default class Register extends React.Component {
             value=""
             validations="equalsField:password"
             validationErrors={errorMessages({
-                                equalsField: "Password"
+                                equalsField: "Password",
                               })}
-            fullWidth={true}
-            required/>
+            fullWidth
+            required />
           <Button
             type="submit"
             block

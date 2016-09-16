@@ -8,46 +8,69 @@ import { Nav, NavItem } from "react-bootstrap";
 
 import * as actions from "actions";
 
-export class Lists extends React.Component {
-
+@withRouter
+@connect(
+  state => ({
+    lists: state.lists,
+  }),
+  dispatch => ({
+    actions: bindActionCreators(actions, dispatch),
+  })
+)
+export default class Lists extends React.Component {
   static propTypes = {
-    lists: ImmutablePropTypes.list
+    actions: React.PropTypes.objectOf(React.PropTypes.func).isRequired,
+    lists: ImmutablePropTypes.list,
+    router: React.PropTypes.object.isRequired,
+    params: React.PropTypes.object.isRequired,
+    children: React.PropTypes.oneOfType([
+      React.PropTypes.arrayOf(React.PropTypes.node),
+      React.PropTypes.node,
+    ]),
+    location: React.PropTypes.object.isRequired,
+  }
+
+  constructor(props) {
+    super(props);
+    this.onSelectList = ::this.onSelectList;
   }
 
   componentDidMount() {
     this.props.actions.fetchLists();
   }
 
-  onSelectList(eventKey) {
-    this.props.router.push(eventKey);
-  }
-
   componentWillReceiveProps(nextProps) {
     if (nextProps.location.pathname.endsWith("/lists")) {
-      let list = nextProps.lists.find((list) => list.id == this.props.params.list) || nextProps.lists.get(0);
+      const list = nextProps.lists.find(l => l.id === this.props.params.list) || nextProps.lists.get(0);
       this.props.router.push(`/lists/${list.id}/tasks`);
     }
+  }
+
+  onSelectList(eventKey) {
+    this.props.router.push(eventKey);
   }
 
   render() {
     let lists;
 
     if (!this.props.lists.isEmpty()) {
-      lists = this.props.lists.map((list) => <NavItem key={list.id} eventKey={`/lists/${list.id}/tasks`} href={`/lists/${list.id}/tasks`}>
-                                               {list.name} [
-                                               {list.tasks_count}]
-                                             </NavItem>);
+      lists = this.props.lists.map(list => <NavItem key={list.id} eventKey={`/lists/${list.id}/tasks`} href={`/lists/${list.id}/tasks`}>
+                                             {list.name} [
+                                             {list.tasks_count}]
+                                           </NavItem>);
     } else {
-      lists = <NavItem eventKey={-1}>
-                Loading...
-              </NavItem>;
+      lists = (
+        <NavItem eventKey={-1}>
+          Loading...
+        </NavItem>
+      );
     }
 
     return (
       <div>
         <Nav
           bsStyle="pills"
-          onSelect={::this.onSelectList}
+          onSelect={this.onSelectList}
           activeHref={this.props.location.pathname}
           style={{ marginBottom: "10px", border: "1px solid #ccc", borderRadius: "4px" }}>
           {lists}
@@ -63,20 +86,3 @@ export class Lists extends React.Component {
       );
   }
 }
-
-function mapStateToProps(state) {
-  return {
-    lists: state.lists
-  };
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    actions: bindActionCreators(actions, dispatch)
-  };
-}
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(withRouter(Lists));

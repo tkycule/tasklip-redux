@@ -13,11 +13,14 @@ import "styles/application.sass";
 import getMuiTheme from "material-ui/styles/getMuiTheme";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 
-require("react-tap-event-plugin")();
-
-import { createHistory, userBasename } from "history"
 import { Router, Route, IndexRoute, hashHistory } from "react-router";
 import { routerReducer, routerMiddleware, syncHistoryWithStore } from "react-router-redux";
+
+import moment from "moment";
+import BigCalendar from "react-big-calendar";
+import "bootstrap/dist/css/bootstrap.css";
+import "react-datetime/css/react-datetime.css";
+import "fullcalendar/dist/fullcalendar.css";
 
 import App from "containers/App/App";
 import Home from "containers/Home/Home";
@@ -31,19 +34,13 @@ import User from "models/User";
 import rootSaga from "sagas/sagas";
 import * as reducers from "reducers";
 
-import moment from "moment";
 moment.locale("ja");
-
 BigCalendar.momentLocalizer(moment);
-import BigCalendar from "react-big-calendar";
-
-import "bootstrap/dist/css/bootstrap.css";
-import "react-datetime/css/react-datetime.css";
-import "fullcalendar/dist/fullcalendar.css";
+require("react-tap-event-plugin")();
 
 const rootReducer = combineReducers({
   ...reducers,
-  routing: routerReducer
+  routing: routerReducer,
 });
 
 const sagaMiddleware = createSagaMiddleware();

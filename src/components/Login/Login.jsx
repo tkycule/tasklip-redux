@@ -7,34 +7,36 @@ import { errorMessages } from "utils";
 
 export default class Login extends React.Component {
 
+  static propTypes = {
+    login: React.PropTypes.func.isRequired,
+  }
+
   constructor(props) {
     super(props);
-
     this.state = {
-      canSubmit: false
+      canSubmit: false,
     };
-  }
-
-  static propTypes = {
-    login: React.PropTypes.func.isRequired
-  }
-
-  enableButton() {
-    this.setState({
-      canSubmit: true
-    });
-  }
-
-  disableButton() {
-    this.setState({
-      canSubmit: false
-    });
+    this.onValid = ::this.onValid;
+    this.onInvalid = ::this.onInvalid;
+    this.onSubmit = ::this.onSubmit;
   }
 
   onSubmit(data) {
     this.props.login({
       email: data.email,
-      password: data.password
+      password: data.password,
+    });
+  }
+
+  enableButton() {
+    this.setState({
+      canSubmit: true,
+    });
+  }
+
+  disableButton() {
+    this.setState({
+      canSubmit: false,
     });
   }
 
@@ -43,17 +45,17 @@ export default class Login extends React.Component {
       <Panel>
         <Form
           layout="vertical"
-          onValid={::this.enableButton}
-          onInvalid={::this.disableButton}
-          onSubmit={::this.onSubmit}>
+          onValid={this.enableButton}
+          onInvalid={this.disableButton}
+          onSubmit={this.onSubmit}>
           <Input
             name="email"
             label="Email"
             value=""
             validations="isEmail"
             validationErrors={errorMessages()}
-            fullWidth={true}
-            required/>
+            fullWidth
+            required />
           <Input
             type="password"
             name="password"
@@ -62,10 +64,10 @@ export default class Login extends React.Component {
             validations="minLength:8,maxLength:64"
             validationErrors={errorMessages({
                                 minLength: 8,
-                                maxLength: 64
+                                maxLength: 64,
                               })}
-            fullWidth={true}
-            required/>
+            fullWidth
+            required />
           <Button
             bsStyle="primary"
             block

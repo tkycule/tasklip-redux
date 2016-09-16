@@ -8,19 +8,25 @@ export default class TaskItem extends React.Component {
   static propTypes = {
     task: ImmutablePropTypes.record.isRequired,
     updateTask: React.PropTypes.func.isRequired,
-    router: React.PropTypes.object.isRequired
+    destroyTask: React.PropTypes.func.isRequired,
+  }
+
+  constructor(props) {
+    super(props);
+    this.onCheck = ::this.onCheck;
+    this.onDestroyClick = ::this.onDestroyClick;
   }
 
   onCheck(event) {
     this.props.updateTask({
-      task: this.props.task.set("done", event.target.checked)
+      task: this.props.task.set("done", event.target.checked),
     });
   }
 
   onDestroyClick() {
     if (window.confirm("Are you sure?")) {
       this.props.destroyTask({
-        task: this.props.task
+        task: this.props.task,
       });
     }
   }
@@ -29,22 +35,26 @@ export default class TaskItem extends React.Component {
     let alarmedAt;
     let startedAt;
     if (this.props.task.alarmed_at) {
-      alarmedAt = <div>
-                    <i className="fa fa-bell" style={{ marginRight: "5px" }} />
-                    {this.props.task.formattedAlarmedAt}
-                  </div>;
+      alarmedAt = (
+        <div>
+          <i className="fa fa-bell" style={{ marginRight: "5px" }} />
+          {this.props.task.formattedAlarmedAt}
+        </div>
+      );
     }
 
     if (this.props.task.started_at) {
-      startedAt = <div>
-                    <i className="fa fa-calendar" style={{ marginRight: "5px" }} />
-                    {this.props.task.formattedStartedAt}&#xFF5E;
-                    {this.props.task.formattedEndedAt}
-                  </div>;
+      startedAt = (
+        <div>
+          <i className="fa fa-calendar" style={{ marginRight: "5px" }} />
+          {this.props.task.formattedStartedAt}&#xFF5E;
+          {this.props.task.formattedEndedAt}
+        </div>
+      );
     }
     return (
       <ListGroupItem style={{ display: "flex", alignItems: "center" }}>
-        <input type="checkbox" checked={this.props.task.done} onChange={::this.onCheck} />
+        <input type="checkbox" checked={this.props.task.done} onChange={this.onCheck} />
         <Link to={`/lists/${this.props.task.list_id}/tasks/${this.props.task.id}/edit`} style={{ marginLeft: "10px" }}>
         <div>
           {this.props.task.title}
@@ -52,7 +62,9 @@ export default class TaskItem extends React.Component {
         {alarmedAt}
         {startedAt}
         </Link>
-        <i style={{ marginLeft: "auto", cursor: "pointer" }} className="fa fa-remove" onClick={::this.onDestroyClick} />
+        <button onClick={this.onDestroyClick}>
+          <i style={{ marginLeft: "auto", cursor: "pointer" }} className="fa fa-remove" />
+        </button>
       </ListGroupItem>
       );
   }

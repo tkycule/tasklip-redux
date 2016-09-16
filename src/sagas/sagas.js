@@ -9,30 +9,30 @@ import Task from "models/Task";
 
 function* login(action) {
   try {
-    let user = yield call(User.login, action.payload.email, action.payload.password);
+    const user = yield call(User.login, action.payload.email, action.payload.password);
     yield put(replace("/lists"));
     yield put(actions.loginSuccess(user));
     yield put(actions.notification({
-      message: "ログインしました"
+      message: "ログインしました",
     }));
   } catch (e) {
     yield put(actions.loginFailure(e));
     yield put(actions.notification({
       message: "ログインに失敗しました",
-      type: "error"
+      type: "error",
     }));
   }
 }
 
 function* register(action) {
   try {
-    let user = yield call(User.register, action.payload.email, action.payload.password);
+    const user = yield call(User.register, action.payload.email, action.payload.password);
     yield put(replace("/lists"));
     yield put(actions.registerSuccess(user));
   } catch (e) {
     yield put(actions.notification({
       message: "ログインに失敗しました",
-      type: "error"
+      type: "error",
     }));
     yield put(actions.registerFailure(e));
   }
@@ -40,10 +40,10 @@ function* register(action) {
 
 function* fetchLists() {
   try {
-    let lists = yield call(List.fetchAll);
+    const lists = yield call(List.fetchAll);
     yield put(actions.fetchListsSuccess(lists));
   } catch (e) {
-    if (e.status == 401) {
+    if (e.status === 401) {
       yield put(replace("/"));
     }
     yield put(actions.fetchListsFailure(e));
@@ -52,7 +52,7 @@ function* fetchLists() {
 
 function* fetchTask(action) {
   try {
-    let task = yield call(Task.fetch, action.payload);
+    const task = yield call(Task.fetch, action.payload);
     yield put(actions.fetchTaskSuccess(task));
   } catch (e) {
     yield put(actions.fetchTaskFailure(e));
@@ -61,7 +61,7 @@ function* fetchTask(action) {
 
 function* fetchTasks(action) {
   try {
-    let tasks = yield call(Task.fetchAll, action.payload);
+    const tasks = yield call(Task.fetchAll, action.payload);
     yield put(actions.fetchTasksSuccess(tasks));
   } catch (e) {
     yield put(actions.fetchTasksFailure(e));
@@ -70,8 +70,8 @@ function* fetchTasks(action) {
 
 function* fetchCalendarEvents(action) {
   try {
-    let tasks = yield call(Task.fetchAll, action.payload);
-    action.payload.callback.call(null, tasks.map((task) => task.toCalendarEvent()).toArray());
+    const tasks = yield call(Task.fetchAll, action.payload);
+    action.payload.callback.call(null, tasks.map(task => task.toCalendarEvent()).toArray());
     yield put(actions.fetchCalendarEventsSuccess(tasks));
   } catch (e) {
     yield put(actions.fetchCalendarEventsFailure(e));
@@ -80,8 +80,8 @@ function* fetchCalendarEvents(action) {
 
 function* addTask(action) {
   try {
-    let task = yield call(action.payload.task.save.bind(action.payload.task));
-    if (typeof action.payload.onSuccess == "function") {
+    const task = yield call(action.payload.task.save.bind(action.payload.task));
+    if (typeof action.payload.onSuccess === "function") {
       action.payload.onSuccess();
     }
     yield put(actions.addTaskSuccess(task));
@@ -93,17 +93,17 @@ function* addTask(action) {
 
 function* updateTask(action) {
   try {
-    let task = yield call(action.payload.task.save.bind(action.payload.task));
+    const task = yield call(action.payload.task.save.bind(action.payload.task));
     yield put(actions.updateTaskSuccess(task));
     yield put(actions.fetchLists());
 
     if (action.payload.notification) {
       yield put(actions.notification({
-        message: "更新しました"
+        message: "更新しました",
       }));
     }
 
-    if (typeof action.payload.onSuccess == "function") {
+    if (typeof action.payload.onSuccess === "function") {
       action.payload.onSuccess();
     }
   } catch (e) {
@@ -123,14 +123,14 @@ function* destroyTask(action) {
 
 function* addList(action) {
   try {
-    let list = yield call(action.payload.list.save.bind(action.payload.list));
-    if (typeof action.payload.onSuccess == "function") {
+    const list = yield call(action.payload.list.save.bind(action.payload.list));
+    if (typeof action.payload.onSuccess === "function") {
       action.payload.onSuccess();
     }
     yield put(actions.addListSuccess(list));
     yield put(actions.fetchLists());
     yield put(actions.notification({
-      message: "リストを追加しました"
+      message: "リストを追加しました",
     }));
   } catch (e) {
     yield put(actions.addListFailure(e));
@@ -143,7 +143,7 @@ function* destroyList(action) {
     yield put(actions.destroyListSuccess(action.payload.list));
     yield put(actions.fetchLists());
     yield put(actions.notification({
-      message: "リストを削除しました"
+      message: "リストを削除しました",
     }));
   } catch (e) {
     yield put(actions.destroyListFailure(e));
@@ -152,14 +152,13 @@ function* destroyList(action) {
 
 function* updateList(action) {
   try {
-    let list = yield call(action.payload.list.save.bind(action.payload.list));
+    const list = yield call(action.payload.list.save.bind(action.payload.list));
     yield put(actions.updateListSuccess(list));
     yield put(actions.fetchLists());
 
     yield put(actions.notification({
-      message: "更新しました"
+      message: "更新しました",
     }));
-
   } catch (e) {
     yield put(actions.updateListFailure(e));
   }

@@ -1,11 +1,32 @@
 import { createAction } from "redux-actions";
 import changeCase from "change-case";
 
+function createSuite(action, options = {
+    noAsync: false,
+  }) {
+  const constant = changeCase.constantCase(action);
+  exports[constant] = constant;
+  exports[action] = createAction(constant);
+
+  if (!options.noAsync) {
+    exports[`${constant}_SUCCESS`] = `${constant}_SUCCESS`;
+    exports[`${constant}_FAILURE`] = `${constant}_FAILURE`;
+    exports[`${action}Success`] = createAction(`${constant}_SUCCESS`);
+    exports[`${action}Failure`] = createAction(`${constant}_FAILURE`);
+  }
+}
+
 createSuite("login");
-createSuite("logout", true);
+createSuite("logout", {
+  noAsync: true,
+});
 createSuite("register");
-createSuite("notification", true);
-createSuite("clearNotification", true);
+createSuite("notification", {
+  noAsync: true,
+});
+createSuite("clearNotification", {
+  noAsync: true,
+});
 createSuite("fetchLists");
 createSuite("fetchTask");
 createSuite("fetchTasks");
@@ -16,16 +37,3 @@ createSuite("destroyTask");
 createSuite("addList");
 createSuite("updateList");
 createSuite("destroyList");
-
-function createSuite(action, noSuccessAndFailure = false) {
-  let constant = changeCase.constantCase(action);
-  exports[constant] = constant;
-  exports[action] = createAction(constant);
-
-  if (!noSuccessAndFailure) {
-    exports[constant + "_SUCCESS"] = constant + "_SUCCESS";
-    exports[constant + "_FAILURE"] = constant + "_FAILURE";
-    exports[action + "Success"] = createAction(constant + "_SUCCESS");
-    exports[action + "Failure"] = createAction(constant + "_FAILURE");
-  }
-}

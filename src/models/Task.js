@@ -3,7 +3,7 @@ import { Record, List } from "immutable";
 import request from "utils/request";
 import moment from "moment";
 
-const TaskRecord = Record({
+const TaskRecord = new Record({
   id: null,
   list_id: null,
   title: null,
@@ -13,7 +13,7 @@ const TaskRecord = Record({
   started_at: null,
   ended_at: null,
   created_at: null,
-  updated_at: null
+  updated_at: null,
 });
 
 const dateFormat = "YY/MM/DD(ddd) HH:mm";
@@ -23,28 +23,25 @@ export default class Task extends TaskRecord {
   static fetch(id) {
     return request
       .get(`/tasks/${id}`)
-      .then((res) => new Task(res.body));
+      .then(res => new Task(res.body));
   }
 
   static fetchAll(options) {
-    let listId = options.listId;
-    delete options.listId;
-
+    const listId = options.listId;
     return request
-      .get(listId ? `/lists/${listId}/tasks` : "/tasks", options)
-      .then((res) => new List(res.body.map((attributes) => new Task(attributes))));
+      .get(listId ? `/lists/${listId}/tasks` : "/tasks", _.omit(options, "listId"))
+      .then(res => new List(res.body.map(attributes => new Task(attributes))));
   }
 
   save() {
     if (this.id == null) {
       return request
         .post(`/lists/${this.list_id}/tasks`, this.toJSON())
-        .then((res) => new Task(res.body));
-    } else {
-      return request
-        .patch(`/tasks/${this.id}`, this.toJSON())
-        .then((res) => new Task(res.body));
+        .then(res => new Task(res.body));
     }
+    return request
+      .patch(`/tasks/${this.id}`, this.toJSON())
+      .then(res => new Task(res.body));
   }
 
   destroy() {
@@ -82,7 +79,7 @@ export default class Task extends TaskRecord {
   }
 
   toCalendarEvent() {
-    let event = this.toJSON();
+    const event = this.toJSON();
     event.start = this.start;
     event.end = this.end;
     return event;
