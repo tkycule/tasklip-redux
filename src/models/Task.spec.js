@@ -1,4 +1,4 @@
-import { expect } from "chai";
+import assert from "power-assert";
 import { List } from "immutable";
 import Task from "./Task";
 
@@ -13,7 +13,7 @@ describe("Model Task", () => {
   const columns = ["id", "list_id", "title", "memo", "done", "alarmed_at", "started_at", "ended_at", "created_at", "updated_at"];
   columns.forEach((column) => {
     it(`should set ${column}`, () => {
-      expect(model.set(column, "some value")).to.have.property(column, "some value");
+      assert(model.set(column, "some value").get(column) === "some value");
     });
   });
 
@@ -38,16 +38,16 @@ describe("Model Task", () => {
       }));
     });
 
-    it("returns lists", (done) => {
+    it("returns tasks", (done) => {
       Task
         .fetchAll({
           listId: 1,
         })
-        .then((lists) => {
-          expect(lists).to.be.instanceOf(List);
-          expect(lists.size).to.equal(2);
-          expect(lists.get(0)).to.equal(new Task(fixtures[0]));
-          expect(lists.get(1)).to.equal(new Task(fixtures[1]));
+        .then((tasks) => {
+          assert(tasks instanceof List);
+          assert(tasks.size === 2);
+          assert.deepEqual(tasks.get(0).toJS(), new Task(fixtures[0]).toJS());
+          assert.deepEqual(tasks.get(1).toJS(), new Task(fixtures[1]).toJS());
         })
         .then(done).catch(done);
     });

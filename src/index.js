@@ -19,13 +19,13 @@ import "bootstrap/dist/css/bootstrap.css";
 import "react-datetime/css/react-datetime.css";
 import "fullcalendar/dist/fullcalendar.css";
 
-import App from "containers/App/App";
-import Home from "containers/Home/Home";
-import Lists from "containers/Lists/Lists";
-import List from "containers/Lists/List";
-import EditTask from "containers/EditTask/EditTask";
-import ConfigLists from "containers/ConfigLists/ConfigLists";
-import Calendar from "containers/Calendar/Calendar";
+import App from "containers/App";
+import Home from "containers/Home";
+import Lists from "containers/Lists";
+import List from "containers/List";
+import EditTask from "containers/EditTask";
+import ConfigLists from "containers/ConfigLists";
+import Calendar from "containers/Calendar";
 import User from "models/User";
 
 import rootSaga from "sagas/sagas";

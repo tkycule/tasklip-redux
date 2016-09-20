@@ -6,8 +6,16 @@ import * as actions from "actions";
 
 import { Tabs, Tab } from "react-bootstrap";
 
-import Login from "components/Login/Login";
-import Register from "components/Register/Register";
+import Login from "components/Login";
+import Register from "components/Register";
+
+function mapStateToProps() {
+  return {};
+}
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators(actions, dispatch);
+}
 
 export class Home extends React.Component {
   static propTypes = {
@@ -29,8 +37,4 @@ export class Home extends React.Component {
   }
 }
 
-export default connect(
-  state => ({
-  }),
-  dispatch => bindActionCreators(actions, dispatch)
-)(Home);
+export default connect(mapStateToProps, mapDispatchToProps)(Home);

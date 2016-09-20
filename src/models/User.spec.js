@@ -1,4 +1,4 @@
-import { expect } from "chai";
+import assert from "power-assert";
 import sinon from "sinon";
 import User, { CURRENT_USER_KEY } from "./User";
 
@@ -13,7 +13,7 @@ describe("Model User", () => {
   const columns = ["email", "password", "authentication_token"];
   columns.forEach((column) => {
     it(`should set ${column}`, () => {
-      expect(model.set(column, "some value")).to.have.property(column, "some value");
+      assert.equal(model.set(column, "some value").get(column), "some value");
     });
   });
 
@@ -34,8 +34,8 @@ describe("Model User", () => {
         User
           .login("test@example.com", "password")
           .then((user) => {
-            expect(user.email).to.equal("test@example.com");
-            expect(User.setCurrentUser.calledOnce).to.be.true();
+            assert.equal(user.email, "test@example.com");
+            assert.ok(User.setCurrentUser.calledOnce);
           })
           .then(done).catch(done);
       });
@@ -52,7 +52,7 @@ describe("Model User", () => {
         User
           .login("test@example.com", "invalid")
           .catch((err) => {
-            expect(err.status).to.equal(401);
+            assert(err.status === 401);
             done();
           })
           .then(() => done("error")).catch(done);
@@ -70,9 +70,9 @@ describe("Model User", () => {
         email: "test@example.com",
       });
 
-      expect(localStorage[CURRENT_USER_KEY]).to.be.not.ok();
+      assert.ok(!localStorage[CURRENT_USER_KEY]);
       User.setCurrentUser(user);
-      expect(localStorage[CURRENT_USER_KEY]).to.deep.equal(JSON.stringify(user.toJSON()));
+      assert.equal(localStorage[CURRENT_USER_KEY], JSON.stringify(user.toJSON()));
     });
   });
 
@@ -86,9 +86,9 @@ describe("Model User", () => {
         email: "test@example.com",
       });
 
-      expect(User.getCurrentUser()).to.be.null();
+      assert(User.getCurrentUser() === null);
       localStorage[CURRENT_USER_KEY] = JSON.stringify(user.toJSON());
-      expect(User.getCurrentUser()).to.equal(user);
+      assert.deepEqual(User.getCurrentUser().toJS(), user.toJS());
     });
   });
 
@@ -104,7 +104,7 @@ describe("Model User", () => {
 
       localStorage[CURRENT_USER_KEY] = JSON.stringify(user.toJSON());
       user.logout();
-      expect(localStorage[CURRENT_USER_KEY]).to.be.undefined();
+      assert(localStorage[CURRENT_USER_KEY] === undefined);
     });
   });
 });

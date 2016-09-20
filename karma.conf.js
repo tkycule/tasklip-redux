@@ -1,48 +1,45 @@
-/*eslint no-var:0*/
+const argv = require("yargs").argv;
+const webpackConfig = require("./webpack.config");
 
-var argv = require("yargs").argv;
-var webpackConfig = require("./webpack.config");
-webpackConfig.devtool = "inline-source-map";
-
-module.exports = function(config) {
+module.exports = (config) => {
   config.set({
     basePath: "",
-    frameworks: ["mocha", "chai"],
+    frameworks: ["mocha"],
     files: [
-      "tests.webpack.js"
+      "tests.webpack.js",
     ],
 
     preprocessors: {
       // add webpack as preprocessor
-      "tests.webpack.js": ["webpack", "sourcemap"]
+      "tests.webpack.js": ["webpack"],
     },
 
     webpack: webpackConfig,
     webpackServer: {
-      noInfo: true
+      noInfo: true,
+      quiet: true,
     },
 
     plugins: [
       "karma-mocha",
-      "karma-chai",
       "karma-webpack",
       "karma-phantomjs-launcher",
       "karma-spec-reporter",
       "karma-mocha-reporter",
       "karma-sourcemap-loader",
-      "karma-osx-reporter"
+      "karma-osx-reporter",
     ],
 
     reporters: ["mocha", "osx"],
 
     mochaReporter: {
-      showDiff: true
+      showDiff: true,
     },
 
     port: 9876,
     colors: true,
     logLevel: config.LOG_INFO,
     browsers: ["PhantomJS"],
-    singleRun: !argv.watch
+    singleRun: !argv.watch,
   });
 };

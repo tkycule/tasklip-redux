@@ -8,7 +8,7 @@ import Form from "formsy-react-components/release/form";
 import { Input } from "formsy-react-components";
 
 import List from "models/List";
-import ListItem from "components/ListItem/ListItem";
+import ListItem from "components/ListItem";
 import * as actions from "actions";
 
 @connect(

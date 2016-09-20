@@ -62,8 +62,8 @@ export default class TaskItem extends React.Component {
         {alarmedAt}
         {startedAt}
         </Link>
-        <button onClick={this.onDestroyClick}>
-          <i style={{ marginLeft: "auto", cursor: "pointer" }} className="fa fa-remove" />
+        <button onClick={this.onDestroyClick} style={{ marginLeft: "auto", border: "none", backgroundColor: "transparent" }}>
+          <i className="fa fa-remove" />
         </button>
       </ListGroupItem>
       );

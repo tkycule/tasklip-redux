@@ -10,7 +10,7 @@ import Form from "formsy-react-components/release/form";
 
 import * as actions from "actions";
 
-import TaskItem from "components/TaskItem/TaskItem";
+import TaskItem from "components/TaskItem";
 import Task from "models/Task";
 
 @withRouter

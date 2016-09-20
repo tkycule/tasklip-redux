@@ -3,13 +3,14 @@
 	"plugins": ["transform-decorators-legacy"],
   "env": {
     "development": {
-      "presets": ["react-hmre"]
+      "presets": ["react-hmre"],
     },
     "production": {
       "presets": []
     },
     "test": {
-      "presets": []
+      "presets": [],
+			"plugins": ["babel-plugin-espower"]
     }
   }
 }

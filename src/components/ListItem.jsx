@@ -43,8 +43,8 @@ export default class ListItem extends React.Component {
     return (
       <ListGroupItem style={{ display: "flex", alignItems: "center" }}>
         {inlineEdit}
-        <button onClick={this.onDestroyClick}>
-          <i style={{ marginLeft: "auto", cursor: "pointer" }} className="fa fa-remove" />
+        <button onClick={this.onDestroyClick} style={{ marginLeft: "auto", border: "none", backgroundColor: "transparent" }}>
+          <i className="fa fa-remove" />
         </button>
       </ListGroupItem>
       );

@@ -8,7 +8,7 @@ import * as actions from "actions";
 
 import { Navbar, Nav, NavItem, Grid } from "react-bootstrap";
 
-import Notification from "components/Notification/Notification";
+import Notification from "components/Notification";
 
 @withRouter
 @connect(
@@ -51,9 +51,9 @@ export default class App extends React.Component {
     if (this.props.currentUser) {
       rightToolbar = (
         <Nav pullRight>
-          <Navbar.Text style={{ paddingLeft: "15px" }}>
+          <NavItem>
             {this.props.currentUser.email}
-          </Navbar.Text>
+          </NavItem>
           <NavItem onClick={this.onClickLogout}>
             Logout
           </NavItem>

@@ -1,5 +1,5 @@
 import React from "react";
-import { expect } from "chai";
+import assert from "power-assert";
 import { shallow } from "enzyme";
 
 import { Tabs, Tab } from "react-bootstrap";
@@ -13,7 +13,7 @@ describe("<Home />", () => {
   });
 
   it("should render correctly", () => {
-    expect(wrapper.find(Tabs)).to.have.lengthOf(1);
-    expect(wrapper.find(Tab)).to.have.lengthOf(2);
+    assert(wrapper.find(Tabs).length === 1);
+    assert(wrapper.find(Tab).length === 2);
   });
 });

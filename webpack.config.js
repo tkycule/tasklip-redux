@@ -1,5 +1,3 @@
-"use strict";
-
 const NODE_ENV = process.env.NODE_ENV || "development";
 const dotenv = require("dotenv");
 
@@ -23,29 +21,28 @@ const dest = join(root, "dist");
 const dotEnvVars = dotenv.config();
 const environmentEnv = dotenv.config({
   path: join(root, "config", `${NODE_ENV}.env`),
-  silent: true
+  silent: true,
 });
 const envVariables = Object.assign({}, dotEnvVars, environmentEnv);
 
-let config = getConfig({
-  isDev: isDev,
+const config = getConfig({
+  isDev,
   in: join(src, "index.js"),
   out: dest,
-  html: function(context) {
-    return {
-      "index.html": context.defaultTemplate({
-        title: envVariables.APP_NAME,
-        publicPath: isDev ? envVariables.ROOT_URL : "",
-        meta: {}
-      })
-    };
-  },
+  html: context => ({
+    "index.html": context.defaultTemplate({
+      title: envVariables.APP_NAME,
+      publicPath: isDev ? envVariables.ROOT_URL : "",
+      meta: {},
+    }),
+  }),
   devServer: {
-    port: 4000
-  }
+    port: 4000,
+  },
 });
 
 config.output.publicPath = envVariables.ROOT_URL;
+config.module.exprContextCritical = false;
 
 const defines = Object.keys(envVariables)
   .reduce((memo, key) => {
@@ -54,11 +51,11 @@ const defines = Object.keys(envVariables)
     return memo;
   }, {
     __NODE_ENV__: JSON.stringify(NODE_ENV),
-    __DEBUG__: isDev
+    __DEBUG__: isDev,
   });
 
 config.plugins = [
-  new webpack.DefinePlugin(defines)
+  new webpack.DefinePlugin(defines),
 ].concat(config.plugins);
 // END ENV variables
 
@@ -104,7 +101,7 @@ config.plugins = [
 config.postcss = [].concat([
   require("precss")({}),
   require("autoprefixer")({}),
-  require("cssnano")({})
+  require("cssnano")({}),
 ]);
 
 // END postcss
@@ -120,7 +117,7 @@ config.resolve.alias = {
   sagas: join(src, "sagas"),
   styles: join(src, "styles"),
   test: join(src, "test"),
-  utils: join(src, "utils")
+  utils: join(src, "utils"),
 };
 // end Roots
 
@@ -129,31 +126,33 @@ config.resolve.alias = {
 //
 config.module.loaders.push({
   test: /\.modernizrrc$/,
-  loader: "modernizr"
+  loader: "modernizr",
 });
 
-config.resolve.alias["modernizr$"] = path.resolve(__dirname, "./.modernizrrc");
+config.resolve.alias.modernizr$ = path.resolve(__dirname, "./.modernizrrc");
 
 config.externals = {};
 
 // Testing
 if (isTest) {
   Object.assign(config.externals, {
+    jsdom: "window",
+    cheerio: "window",
     "react/addons": true,
     "react/lib/ReactContext": true,
-    "react/lib/ExecutionEnvironment": true
+    "react/lib/ExecutionEnvironment": true,
   });
 
-  config.module.noParse = /[/\\]sinon\.js/;
+  config.module.noParse = /node_modules\/sinon\//;
   config.resolve.alias.sinon = "sinon/pkg/sinon";
 
-  config.plugins = config.plugins.filter(p => {
+  config.plugins = config.plugins.filter((p) => {
     const name = p.constructor.toString();
     const fnName = name.match(/^function (.*)\((.*\))/);
 
     const idx = [
       "DedupePlugin",
-      "UglifyJsPlugin"
+      "UglifyJsPlugin",
     ].indexOf(fnName[1]);
     return idx < 0;
   });

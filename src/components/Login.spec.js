@@ -1,5 +1,5 @@
 import React from "react";
-import { expect } from "chai";
+import assert from "power-assert";
 import { shallow } from "enzyme";
 import sinon from "sinon";
 
@@ -10,6 +10,7 @@ describe("<Login />", () => {
   let email;
   let password;
   let login;
+
   beforeEach(() => {
     login = sinon.spy();
     wrapper = shallow(<Login login={login} />);
@@ -18,18 +19,18 @@ describe("<Login />", () => {
   });
 
   it("should render correctly", () => {
-    expect(wrapper.find("form")).to.have.lengthOf(1);
-    expect(email).to.have.lengthOf(1);
-    expect(password).to.have.lengthOf(1);
-    expect(wrapper.find("Button[type='submit']")).to.have.lengthOf(1);
+    assert(wrapper.find("form").length === 1);
+    assert(email.length === 1);
+    assert(password.length === 1);
+    assert(wrapper.find("Button[type='submit']").length === 1);
   });
 
   describe("validations", () => {
     it("should be correctly", () => {
-      expect(email.prop("validations")).to.equal("isEmail");
-      expect(email.prop("required")).to.be.true();
-      expect(password.prop("validations")).to.equal("minLength:8,maxLength:64");
-      expect(password.prop("required")).to.be.true();
+      assert.equal(email.prop("validations"), "isEmail");
+      assert.ok(email.prop("required"));
+      assert.equal(password.prop("validations"), "minLength:8,maxLength:64");
+      assert.ok(password.prop("required"));
     });
   });
 
@@ -39,10 +40,10 @@ describe("<Login />", () => {
         email: "test@example.com",
         password: "password",
       });
-      expect(login.calledWith({
+      assert.ok(login.calledWith({
         email: "test@example.com",
         password: "password",
-      })).to.be.true();
+      }));
     });
   });
 });
