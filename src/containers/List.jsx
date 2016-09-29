@@ -4,14 +4,13 @@ import { bindActionCreators } from "redux";
 import ImmutablePropTypes from "react-immutable-proptypes";
 import { withRouter } from "react-router";
 
+import { reduxForm, Field } from "redux-form";
+import { TextField } from "redux-form-material-ui";
 import { Button, ListGroup } from "react-bootstrap";
-import { Input } from "formsy-react-components";
-import Form from "formsy-react-components/release/form";
 
 import * as actions from "actions";
-
-import TaskItem from "components/TaskItem";
-import Task from "models/Task";
+import { TaskItem } from "components";
+import { Task } from "models";
 
 @withRouter
 @connect(
@@ -22,12 +21,18 @@ import Task from "models/Task";
     actions: bindActionCreators(actions, dispatch),
   })
 )
+@reduxForm({
+  form: "newTaskForm",
+})
 export default class List extends React.Component {
   static propTypes = {
     tasks: ImmutablePropTypes.list,
     actions: React.PropTypes.objectOf(React.PropTypes.func).isRequired,
     params: React.PropTypes.object.isRequired,
     router: React.PropTypes.object.isRequired,
+    handleSubmit: React.PropTypes.func.isRequired,
+    reset: React.PropTypes.func.isRequired,
+    submitting: React.PropTypes.bool.isRequired,
   }
 
   constructor(props) {
@@ -57,14 +62,20 @@ export default class List extends React.Component {
     }
   }
 
-  onSubmit(data, resetForm) {
-    this.props.actions.addTask({
-      task: new Task(data.merge({
-        list_id: this.props.params.listId,
-      })),
-      onSuccess: resetForm,
+  onSubmit(data) {
+    if (data.title === "") {
+      return null;
+    }
+
+    return new Promise((resolve, reject) => {
+      data.list_id = this.props.params.listId;
+      this.props.actions.addTask({
+        task: new Task(data),
+        onSuccess: this.props.reset,
+        resolve,
+        reject,
+      });
     });
-    resetForm();
   }
 
   onDoneClick() {
@@ -80,18 +91,17 @@ export default class List extends React.Component {
   render() {
     return (
       <div>
-        <Form layout="elementOnly" onSubmit={this.onSubmit} style={{ marginBottom: "10px" }}>
-          <Input
+        <form style={{ marginBottom: "10px" }} onSubmit={this.props.handleSubmit(this.onSubmit)}>
+          <Field
             name="title"
-            type="text"
-            value=""
-            required
-            placeholder="New Task"
+            floatingLabelText="New Task"
+            component={TextField}
             autoComplete="off"
-            buttonAfter={<Button type="submit">
-                           <i className="fa fa-plus" />
-                         </Button>} />
-        </Form>
+            fullWidth />
+          <Button type="submit" disabled={this.props.submitting}>
+            <i className="fa fa-plus" />
+          </Button>
+        </form>
         <ListGroup>
           {this.props.tasks.map(task => <TaskItem
                                           task={task}

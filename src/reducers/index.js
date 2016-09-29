@@ -70,9 +70,6 @@ const notificationIntialState = {
 
 export function notification(state = notificationIntialState, action) {
   switch (action.type) {
-    case actions.NOTIFICATION:
-      return action.payload;
-
     case actions.LOGIN_SUCCESS:
       return {
         title: "ログインしました",
@@ -107,8 +104,17 @@ export function notification(state = notificationIntialState, action) {
       }
       break;
 
+    case actions.ADD_TASK_SUCCESS:
+      return {
+        title: "タスクを作成しました",
+      };
+
+    case actions.DESTROY_TASK_SUCCESS:
+      return {
+        title: "タスクを削除しました",
+      };
+
     default:
-      return state;
   }
 
   if (action.error && action.type.indexOf("redux-form/") === -1) {

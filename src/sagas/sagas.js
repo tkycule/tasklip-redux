@@ -75,13 +75,15 @@ function* fetchCalendarEvents(action) {
 function* addTask(action) {
   try {
     const task = yield call(action.payload.task.save.bind(action.payload.task));
-    if (typeof action.payload.onSuccess === "function") {
+    if (_.isFunction(action.payload.onSuccess)) {
       action.payload.onSuccess();
     }
     yield put(actions.addTaskSuccess(task));
     yield put(actions.fetchLists());
+    action.payload.resolve();
   } catch (e) {
     yield put(actions.addTaskFailure(e));
+    action.payload.reject(new SubmissionError(e.response ? e.response.body : ""));
   }
 }
 
