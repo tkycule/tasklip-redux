@@ -41,6 +41,10 @@ const config = getConfig({
   },
 });
 
+if (NODE_ENV === "development") {
+  config.entry[0] = `${config.entry[0]}?reload=true`;
+}
+
 config.output.publicPath = envVariables.ROOT_URL;
 config.module.exprContextCritical = false;
 

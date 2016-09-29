@@ -1,92 +1,72 @@
 import React from "react";
 
+import { reduxForm, Field } from "redux-form";
+import { TextField } from "redux-form-material-ui";
 import { Button, Panel } from "react-bootstrap";
-import { Input } from "formsy-react-components";
-import Form from "formsy-react-components/release/form";
-import { errorMessages } from "utils";
 
+import * as v from "utils/validation";
+
+@reduxForm({
+  form: "registerForm",
+  validate: v.createValidator({
+    email: [v.required],
+    password: [v.required],
+    password_confirmation: [v.match("password")],
+  }),
+})
 export default class Register extends React.Component {
   static propTypes = {
     register: React.PropTypes.func.isRequired,
+    handleSubmit: React.PropTypes.func.isRequired,
+    invalid: React.PropTypes.bool.isRequired,
+    submitting: React.PropTypes.bool.isRequired,
   }
 
   constructor(props) {
     super(props);
-    this.state = {
-      canSubmit: false,
-    };
-    this.enableButton = ::this.enableButton;
-    this.disableButton = ::this.disableButton;
     this.onSubmit = ::this.onSubmit;
   }
 
   onSubmit(data) {
-    this.props.register({
-      email: data.email,
-      password: data.password,
-    });
-  }
-
-  enableButton() {
-    this.setState({
-      canSubmit: true,
-    });
-  }
-
-  disableButton() {
-    this.setState({
-      canSubmit: false,
+    return new Promise((resolve, reject) => {
+      this.props.register({
+        email: data.email,
+        password: data.password,
+        resolve,
+        reject,
+      });
     });
   }
 
   render() {
     return (
       <Panel>
-        <Form
-          layout="vertical"
-          onValid={this.enableButton}
-          onInvalid={this.disableButton}
-          onSubmit={this.onSubmit}>
-          <Input
+        <form onSubmit={this.props.handleSubmit(this.onSubmit)}>
+          <Field
             name="email"
-            type="email"
-            label="Email"
-            value=""
-            validations="isEmail"
-            validationErrors={errorMessages()}
-            fullWidth
-            required />
-          <Input
-            type="password"
+            floatingLabelText="Email"
+            component={TextField}
+            fullWidth />
+          <Field
             name="password"
-            label="Password"
-            value=""
-            validations="minLength:8,maxLength:64"
-            validationErrors={errorMessages({
-                                minLength: 8,
-                                maxLength: 64,
-                              })}
-            fullWidth
-            required />
-          <Input
             type="password"
+            floatingLabelText="Password"
+            component={TextField}
+            fullWidth />
+          <Field
             name="password_confirmation"
-            label="Password (Confirmation)"
-            value=""
-            validations="equalsField:password"
-            validationErrors={errorMessages({
-                                equalsField: "Password",
-                              })}
-            fullWidth
-            required />
+            type="password"
+            floatingLabelText="Password Confirmation"
+            component={TextField}
+            fullWidth />
           <Button
             type="submit"
             block
             bsStyle="primary"
-            disabled={!this.state.canSubmit}>
+            disabled={this.props.invalid || this.props.submitting}>
             Register
           </Button>
-        </Form>
+        </form>
       </Panel>
       );
   }

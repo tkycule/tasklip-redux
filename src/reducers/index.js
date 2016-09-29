@@ -63,24 +63,61 @@ export function calenderEvents(state = null, action) {
 }
 
 const notificationIntialState = {
+  title: null,
   message: null,
+  type: null,
 };
 
 export function notification(state = notificationIntialState, action) {
   switch (action.type) {
     case actions.NOTIFICATION:
       return action.payload;
-    case actions.CLEAR_NOTIFICATION:
-      return notificationIntialState;
+
+    case actions.LOGIN_SUCCESS:
+      return {
+        title: "ログインしました",
+      };
+
+    case actions.LOGIN_FAILURE:
+      if (action.payload.status === 401) {
+        return {
+          title: "ログインできませんでした",
+          message: "メールアドレスをパスワードを確認してください",
+          type: "error",
+        };
+      }
+      break;
+
+    case actions.LOGOUT:
+      return {
+        title: "ログアウトしました",
+      };
+
+    case actions.REGISTER_SUCCESS:
+      return {
+        title: "登録完了しました",
+      };
+
+    case actions.REGISTER_FAILURE:
+      if (action.payload.status === 422) {
+        return {
+          title: "入力エラーがあります",
+          type: "error",
+        };
+      }
+      break;
+
     default:
+      return state;
   }
 
-  if (action.error) {
-    console.error(action.payload); /* eslint no-console:0 */
+  if (action.error && action.type.indexOf("redux-form/") === -1) {
     return {
-      message: action.payload.response.text,
-      type: "danger",
+      title: "エラーが発生しました",
+      message: action.payload.message,
+      type: "error",
     };
   }
+
   return state;
 }

@@ -9,6 +9,8 @@ import createSagaMiddleware from "redux-saga";
 
 import "font-awesome/css/font-awesome.css";
 import "styles/application.sass";
+import "animate.css/animate.css";
+import "toastr/build/toastr.css";
 
 import { Router, Route, IndexRoute, hashHistory } from "react-router";
 import { routerReducer, routerMiddleware, syncHistoryWithStore } from "react-router-redux";
@@ -19,16 +21,14 @@ import "bootstrap/dist/css/bootstrap.css";
 import "react-datetime/css/react-datetime.css";
 import "fullcalendar/dist/fullcalendar.css";
 
-import App from "containers/App";
-import Home from "containers/Home";
-import Lists from "containers/Lists";
-import List from "containers/List";
-import EditTask from "containers/EditTask";
-import ConfigLists from "containers/ConfigLists";
-import Calendar from "containers/Calendar";
-import User from "models/User";
+import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 
 import rootSaga from "sagas/sagas";
+import { reducer as formReducer } from "redux-form";
+
+import { App, Home, Lists, List, EditTask, ConfigLists, Calendar } from "containers";
+import User from "models/User";
+
 import * as reducers from "reducers";
 
 moment.locale("ja");
@@ -37,6 +37,7 @@ require("react-tap-event-plugin")();
 
 const rootReducer = combineReducers({
   ...reducers,
+  form: formReducer,
   routing: routerReducer,
 });
 
@@ -67,18 +68,20 @@ function userOnly(nextState, replace) {
 const history = syncHistoryWithStore(hashHistory, store);
 
 ReactDOM.render(
-  <Provider store={store}>
-    <Router history={history}>
-      <Route path="/" component={App}>
-        <IndexRoute component={Home} onEnter={guestOnly} />
-        <Route path="lists" component={Lists} onEnter={userOnly}>
-          <Route path="config" component={ConfigLists} />
-          <Route path="calendar" component={Calendar} />
-          <Route path=":listId/tasks" component={List} />
-          <Route path=":listId/tasks/:taskId/edit" component={EditTask} />
+  <MuiThemeProvider>
+    <Provider store={store}>
+      <Router history={history}>
+        <Route path="/" component={App}>
+          <IndexRoute component={Home} onEnter={guestOnly} />
+          <Route path="lists" component={Lists} onEnter={userOnly}>
+            <Route path="config" component={ConfigLists} />
+            <Route path="calendar" component={Calendar} />
+            <Route path=":listId/tasks" component={List} />
+            <Route path=":listId/tasks/:taskId/edit" component={EditTask} />
+          </Route>
         </Route>
-      </Route>
-    </Router>
-  </Provider>
+      </Router>
+    </Provider>
+  </MuiThemeProvider>
   , document.querySelector("#root")
 );

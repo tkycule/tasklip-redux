@@ -6,35 +6,30 @@ import * as actions from "actions";
 
 import { Tabs, Tab } from "react-bootstrap";
 
-import Login from "components/Login";
-import Register from "components/Register";
+import { Login, Register } from "components";
 
-function mapStateToProps() {
-  return {};
-}
-
-function mapDispatchToProps(dispatch) {
-  return bindActionCreators(actions, dispatch);
-}
-
-export class Home extends React.Component {
+@connect(
+  () => ({
+  }),
+  dispatch => ({
+    actions: bindActionCreators(actions, dispatch),
+  })
+)
+export default class Home extends React.Component {
   static propTypes = {
-    login: React.PropTypes.func.isRequired,
-    register: React.PropTypes.func.isRequired,
+    actions: React.PropTypes.object.isRequired,
   }
 
   render() {
     return (
-      <Tabs defaultActiveKey={1} id="home-tabs">
+      <Tabs id="home-tabs">
         <Tab title="Login" eventKey={1}>
-          <Login login={this.props.login} />
+          <Login login={this.props.actions.login} />
         </Tab>
         <Tab title="Register" eventKey={2}>
-          <Register register={this.props.register} />
+          <Register register={this.props.actions.register} />
         </Tab>
       </Tabs>
       );
   }
 }
-
-export default connect(mapStateToProps, mapDispatchToProps)(Home);

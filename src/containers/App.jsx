@@ -8,7 +8,7 @@ import * as actions from "actions";
 
 import { Navbar, Nav, NavItem, Grid } from "react-bootstrap";
 
-import Notification from "components/Notification";
+import { Notification } from "components";
 
 @withRouter
 @connect(
@@ -41,9 +41,6 @@ export default class App extends React.Component {
     this.props.currentUser.logout();
     this.props.actions.logout();
     this.props.router.push("/");
-    this.props.actions.notification({
-      message: "ログアウトしました",
-    });
   }
 
   render() {

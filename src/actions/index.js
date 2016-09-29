@@ -24,9 +24,6 @@ createSuite("register");
 createSuite("notification", {
   noAsync: true,
 });
-createSuite("clearNotification", {
-  noAsync: true,
-});
 createSuite("fetchLists");
 createSuite("fetchTask");
 createSuite("fetchTasks");

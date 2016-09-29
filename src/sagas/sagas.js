@@ -1,6 +1,7 @@
 import { takeEvery } from "redux-saga";
 import { put, call, fork } from "redux-saga/effects";
 import { replace } from "react-router-redux";
+import { SubmissionError } from "redux-form";
 
 import * as actions from "actions";
 import User from "models/User";
@@ -12,15 +13,10 @@ function* login(action) {
     const user = yield call(User.login, action.payload.email, action.payload.password);
     yield put(replace("/lists"));
     yield put(actions.loginSuccess(user));
-    yield put(actions.notification({
-      message: "ログインしました",
-    }));
+    action.payload.resolve();
   } catch (e) {
     yield put(actions.loginFailure(e));
-    yield put(actions.notification({
-      message: "ログインに失敗しました",
-      type: "error",
-    }));
+    action.payload.reject(new SubmissionError(e.response ? e.response.body : ""));
   }
 }
 
@@ -29,12 +25,10 @@ function* register(action) {
     const user = yield call(User.register, action.payload.email, action.payload.password);
     yield put(replace("/lists"));
     yield put(actions.registerSuccess(user));
+    action.payload.resolve();
   } catch (e) {
-    yield put(actions.notification({
-      message: "ログインに失敗しました",
-      type: "error",
-    }));
     yield put(actions.registerFailure(e));
+    action.payload.reject(new SubmissionError(e.response ? e.response.body : ""));
   }
 }
 
