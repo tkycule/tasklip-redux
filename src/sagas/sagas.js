@@ -1,7 +1,7 @@
 import { takeEvery } from "redux-saga";
 import { put, call, fork } from "redux-saga/effects";
 import { replace } from "react-router-redux";
-import { SubmissionError } from "redux-form";
+import { SubmissionError } from "redux-form/immutable";
 
 import * as actions from "actions";
 import User from "models/User";

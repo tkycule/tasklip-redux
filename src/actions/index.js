@@ -26,6 +26,9 @@ createSuite("notification", {
 });
 createSuite("fetchLists");
 createSuite("fetchTask");
+createSuite("clearTask", {
+  noAsync: true,
+});
 createSuite("fetchTasks");
 createSuite("fetchCalendarEvents");
 createSuite("addTask");

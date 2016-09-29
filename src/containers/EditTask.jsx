@@ -4,61 +4,71 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { withRouter } from "react-router";
 
-import { Button, Well, FormGroup, ControlLabel, InputGroup } from "react-bootstrap";
-import Form from "formsy-react-components/release/form";
-import { Input, Checkbox, Textarea, Select } from "formsy-react-components";
+import { reduxForm, Field, formValueSelector } from "redux-form/immutable";
+import { TextField, SelectField, Checkbox } from "redux-form-material-ui";
+import MenuItem from "material-ui/MenuItem";
+import { Button, Well, FormGroup } from "react-bootstrap";
 import moment from "moment";
 
+import * as v from "utils/validation";
 import * as actions from "actions";
+
+const formName = "taskForm";
+const selector = formValueSelector(formName);
 
 @withRouter
 @connect(
   state => ({
     lists: state.lists,
     task: state.task,
+    formValue: selector(state, "started_at", "ended_at"),
   }),
 
   dispatch => ({
     actions: bindActionCreators(actions, dispatch),
   })
 )
+@reduxForm({
+  form: formName,
+  validate: v.createValidator({
+    title: [v.required],
+  }),
+})
 export default class EditTask extends React.Component {
-
   static propTypes = {
     lists: ImmutablePropTypes.list,
     task: ImmutablePropTypes.record,
     actions: React.PropTypes.objectOf(React.PropTypes.func).isRequired,
     params: React.PropTypes.object,
     router: React.PropTypes.object.isRequired,
+    handleSubmit: React.PropTypes.func.isRequired,
+    submitting: React.PropTypes.bool.isRequired,
+    valid: React.PropTypes.bool.isRequired,
+    initialize: React.PropTypes.func.isRequired,
+    change: React.PropTypes.func.isRequired,
+    formValue: React.PropTypes.object.isRequired,
   }
 
   constructor(props) {
     super(props);
-    this.state = {
-      canSubmit: false,
-      alarmedAt: null,
-    };
-
     this.onDateTimeChange = ::this.onDateTimeChange;
-    this.enableButton = ::this.enableButton;
-    this.disableButton = ::this.disableButton;
     this.onSubmit = ::this.onSubmit;
     this.onBackClick = ::this.onBackClick;
+    this.renderDateTime = ::this.renderDateTime;
   }
 
   componentDidMount() {
-    this.props.actions.fetchTask(this.props.params.taskId);
+    this.props.actions.fetchTask(this.props.params.task_id);
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.task) {
-      this.setState({
-        title: nextProps.task.title,
-        alarmedAt: (nextProps.task.alarmed_at ? new Date(nextProps.task.alarmed_at) : null),
-        startedAt: (nextProps.task.started_at ? new Date(nextProps.task.started_at) : null),
-        endedAt: (nextProps.task.ended_at ? new Date(nextProps.task.ended_at) : null),
-      });
+    if (this.props.task !== nextProps.task) {
+      this.props.initialize(nextProps.task.toForm());
     }
+  }
+
+  componentWillUnmount() {
+    this.props.actions.clearTask();
   }
 
   onSubmit(data) {
@@ -78,24 +88,19 @@ export default class EditTask extends React.Component {
     this.props.router.push(`/lists/${this.props.task.list_id}/tasks`);
   }
 
-  onDateTimeChange(name, value) {
+  onDateTimeChange(e) {
+    const value = e.target.value;
+    const name = e.target.name;
+
     if (!value) {
       return;
     }
 
-    // もう片方が空欄なら同じ値を入れる
-    if (name === "started_at" && !this.ended_at.element.value) {
-      this.ended_at.changeValue({
-        currentTarget: {
-          value: moment(value).add(1, "hours").format("YYYY-MM-DDTHH:mm"),
-        },
-      });
-    } else if (name === "ended_at" && !this.started_at.element.value) {
-      this.started_at.changeValue({
-        currentTarget: {
-          value: moment(value).subtract(1, "hours").format("YYYY-MM-DDTHH:mm"),
-        },
-      });
+    // もう片方が空欄なら自動で値を入れる
+    if (name === "started_at" && !this.props.formValue.ended_at) {
+      this.props.change("ended_at", moment(value).add(1, "hours").format("YYYY-MM-DDTHH:mm"));
+    } else if (name === "ended_at" && !this.props.formValue.started_at) {
+      this.props.change("started_at", moment(value).subtract(1, "hours").format("YYYY-MM-DDTHH:mm"));
     }
   }
 
@@ -108,107 +113,83 @@ export default class EditTask extends React.Component {
     });
   }
 
-  disableButton() {
-    this.setState({
-      canSubmit: false,
-    });
+  renderDateTime(field) {
+    return (
+      <TextField
+        {...field.input}
+        type="datetime-local"
+        className="text-center"
+        onChange={(e) => {
+                    field.onChange(e);
+                    field.input.onChange(e);
+                  }} />
+      );
   }
 
-  renderDateTime(attrs) {
-    return (
-      <Input
-        name={attrs.name}
-        ref={(c) => {
-               this[attrs.name] = c;
-             }}
-        label={attrs.label}
-        type="datetime-local"
-        value={attrs.value ? moment(attrs.value).format("YYYY-MM-DDTHH:mm") : ""}
-        layout={attrs.layout}
-        onChange={this.onDateTimeChange} />
-      );
+  renderListMenuItems() {
+    if (this.props.lists) {
+      return this.props.lists.map((list, index) => <MenuItem value={list.id} primaryText={list.name} key={index} />);
+    }
+    return <MenuItem value={-1} primaryText="Loading..." />;
   }
 
   render() {
     let form;
-    let listItems;
-
-    if (this.props.lists) {
-      listItems = this.props.lists.map(list => ({
-        value: list.id,
-        label: list.name,
-      }));
-    } else {
-      listItems = {
-        value: -1,
-        label: "Loading...",
-      };
-    }
 
     if (this.props.task) {
       form = (
-        <Form
-          layout="vertical"
-          onValid={this.enableButton}
-          onInvalid={this.disableButton}
-          onSubmit={this.onSubmit}>
-          <Input
+        <form onSubmit={this.props.handleSubmit(this.onSubmit)}>
+          <Field
             name="title"
-            label="Title"
-            type="text"
-            value={this.props.task.title}
-            required />
-          <Textarea
+            floatingLabelText="Title"
+            component={TextField}
+            fullWidth />
+          <Field
             name="memo"
-            label="memo"
-            value={this.props.task.memo || ""}
-            rows={5} />
-          <Select
-            label="List"
+            floatingLabelText="Memo"
+            component={TextField}
+            multiLine
+            fullWidth />
+          <Field
             name="list_id"
-            value={this.props.task.list_id}
-            options={listItems} />
-          <Checkbox
-            layout="elementOnly"
+            floatingLabelText="List"
+            component={SelectField}
+            fullWidth>
+            {this.renderListMenuItems()}
+          </Field>
+          <Field
             name="done"
-            checked={this.props.task.done || false}
-            label="DONE" />
-          {this.renderDateTime({
-             name: "alarmed_at",
-             label: "Alarm",
-             value: this.props.task.alarmed_at,
-           })}
+            label="DONE"
+            component={Checkbox}
+            className="m-y-2" />
           <FormGroup>
-            <ControlLabel>
+            <label>
+              Alarm
+            </label>
+            <Field
+              name="alarmed_at"
+              label="Alarmed At"
+              component={TextField}
+              type="datetime-local" />
+          </FormGroup>
+          <FormGroup>
+            <label>
               期間
-            </ControlLabel>
-            <InputGroup>
-              {this.renderDateTime({
-                 name: "started_at",
-                 value: this.props.task.started_at,
-                 layout: "elementOnly",
-               })}
-              <InputGroup.Addon>
-                〜
-              </InputGroup.Addon>
-              {this.renderDateTime({
-                 name: "ended_at",
-                 value: this.props.task.ended_at,
-                 layout: "elementOnly",
-               })}
-            </InputGroup>
+            </label>
+            <Field name="started_at" component={this.renderDateTime} onChange={this.onDateTimeChange} /> 〜
+            <Field name="ended_at" component={this.renderDateTime} onChange={this.onDateTimeChange} />
           </FormGroup>
           <Button
             bsStyle="primary"
             block
             type="submit"
-            disabled={!this.state.canSubmit}>
+            disabled={!this.props.valid || this.props.submitting}>
             UPDATE
           </Button>
           <Button block onClick={this.onBackClick}>
             BACK
           </Button>
-        </Form>
+        </form>
       );
     } else {
       form = (

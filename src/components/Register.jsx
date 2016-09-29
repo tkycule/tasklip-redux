@@ -1,6 +1,6 @@
 import React from "react";
 
-import { reduxForm, Field } from "redux-form";
+import { reduxForm, Field } from "redux-form/immutable";
 import { TextField } from "redux-form-material-ui";
 import { Button, Panel } from "react-bootstrap";
 
@@ -30,8 +30,8 @@ export default class Register extends React.Component {
   onSubmit(data) {
     return new Promise((resolve, reject) => {
       this.props.register({
-        email: data.email,
-        password: data.password,
+        email: data.get("email"),
+        password: data.get("password"),
         resolve,
         reject,
       });

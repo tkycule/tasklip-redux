@@ -48,6 +48,8 @@ export function task(state = null, action) {
       return action.payload;
     case actions.UPDATE_TASK_SUCCESS:
       return null;
+    case actions.CLEAR_TASK:
+      return null;
     default:
       return state;
   }

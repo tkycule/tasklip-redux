@@ -4,7 +4,7 @@ import { bindActionCreators } from "redux";
 import ImmutablePropTypes from "react-immutable-proptypes";
 import { withRouter } from "react-router";
 
-import { reduxForm, Field } from "redux-form";
+import { reduxForm, Field } from "redux-form/immutable";
 import { TextField } from "redux-form-material-ui";
 import { Button, ListGroup } from "react-bootstrap";
 
@@ -46,18 +46,18 @@ export default class List extends React.Component {
 
   componentDidMount() {
     this.props.actions.fetchTasks({
-      listId: this.props.params.listId,
-      showDone: this.state.showDone,
+      list_id: this.props.params.list_id,
+      show_done: this.state.showDone,
     });
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.params.listId !== nextProps.params.listId) {
+    if (this.props.params.list_id !== nextProps.params.list_id) {
       this.setState({
         showDone: false,
       });
       this.props.actions.fetchTasks({
-        listId: nextProps.params.listId,
+        list_id: nextProps.params.list_id,
       });
     }
   }
@@ -68,7 +68,7 @@ export default class List extends React.Component {
     }
 
     return new Promise((resolve, reject) => {
-      data.list_id = this.props.params.listId;
+      data.list_id = this.props.params.list_id;
       this.props.actions.addTask({
         task: new Task(data),
         onSuccess: this.props.reset,
@@ -80,8 +80,8 @@ export default class List extends React.Component {
 
   onDoneClick() {
     this.props.actions.fetchTasks({
-      listId: this.props.params.listId,
-      showDone: !this.state.showDone,
+      list_id: this.props.params.list_id,
+      show_done: !this.state.showDone,
     });
     this.setState({
       showDone: !this.state.showDone,

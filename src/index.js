@@ -24,7 +24,7 @@ import "fullcalendar/dist/fullcalendar.css";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 
 import rootSaga from "sagas/sagas";
-import { reducer as formReducer } from "redux-form";
+import { reducer as formReducer } from "redux-form/immutable";
 
 import { App, Home, Lists, List, EditTask, ConfigLists, Calendar } from "containers";
 import User from "models/User";
@@ -76,8 +76,8 @@ ReactDOM.render(
           <Route path="lists" component={Lists} onEnter={userOnly}>
             <Route path="config" component={ConfigLists} />
             <Route path="calendar" component={Calendar} />
-            <Route path=":listId/tasks" component={List} />
-            <Route path=":listId/tasks/:taskId/edit" component={EditTask} />
+            <Route path=":list_id/tasks" component={List} />
+            <Route path=":list_id/tasks/:task_id/edit" component={EditTask} />
           </Route>
         </Route>
       </Router>

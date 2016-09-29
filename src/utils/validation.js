@@ -52,8 +52,12 @@ export function oneOf(enumeration) {
 
 export function match(field) {
   return (value, data) => {
-    if (data) {
-      if (value !== data[field]) {
+    let d = data;
+    if (typeof d.toJS === "function") {
+      d = d.toJS();
+    }
+    if (d) {
+      if (value !== d[field]) {
         return "Do not match";
       }
     }
@@ -63,10 +67,14 @@ export function match(field) {
 
 export function createValidator(rules) {
   return (data = {}) => {
+    let d = data;
+    if (typeof d.toJS === "function") {
+      d = d.toJS();
+    }
     const errors = {};
     Object.keys(rules).forEach((key) => {
       const rule = join([].concat(rules[key])); // concat enables both functions and arrays of functions
-      const error = rule(data[key], data);
+      const error = rule(d[key], d);
       if (error) {
         errors[key] = error;
       }

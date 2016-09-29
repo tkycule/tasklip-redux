@@ -1,4 +1,4 @@
-import { Record, List } from "immutable";
+import { Record, List, Map, fromJS } from "immutable";
 
 import request from "utils/request";
 import moment from "moment";
@@ -27,9 +27,9 @@ export default class Task extends TaskRecord {
   }
 
   static fetchAll(options) {
-    const listId = options.listId;
+    const listId = options.list_id;
     return request
-      .get(listId ? `/lists/${listId}/tasks` : "/tasks", _.omit(options, "listId"))
+      .get(listId ? `/lists/${listId}/tasks` : "/tasks", _.omit(options, "list_id"))
       .then(res => new List(res.body.map(attributes => new Task(attributes))));
   }
 
@@ -83,6 +83,14 @@ export default class Task extends TaskRecord {
     event.start = this.start;
     event.end = this.end;
     return event;
+  }
+
+  toForm() {
+    return fromJS(Object.assign({}, this.toJS(), {
+      alarmed_at: moment(this.alarmed_at).format("YYYY-MM-DDTHH:mm:ss"),
+      started_at: moment(this.started_at).format("YYYY-MM-DDTHH:mm:ss"),
+      ended_at: moment(this.ended_at).format("YYYY-MM-DDTHH:mm:ss"),
+    }));
   }
 
 }
